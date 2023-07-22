@@ -1,9 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { supabase } from "../../services/supabase";
-import { exp } from "react-native-reanimated";
+// import { User } from "@supabase/gotrue-js/src/lib/types";
+import { User } from "@supabase/supabase-js";
+
+// https://github.com/orgs/supabase/discussions/2222
 export interface userState {
-  user: Object | null;
+  user: User | null;
 }
 
 const initialState: userState = {
@@ -14,10 +17,10 @@ export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setUser: (state, action) => {
+    setUser: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
     },
-    removeUser: (state, action) => {
+    removeUser: (state, _) => {
       state.user = null;
     },
   },

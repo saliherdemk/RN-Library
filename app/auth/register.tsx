@@ -4,13 +4,23 @@ import { StatusBar } from "expo-status-bar";
 import Logo from "../../components/Logo";
 import { Button } from "react-native-elements";
 import { Link } from "expo-router";
+import { supabase } from "../../services/supabase";
+import { setUser } from "../../redux/slicers/userSlicer";
+import { useAppDispatch } from "../../redux/hooks";
 
-const login = () => {
+const register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogIn = () => {
-    console.log(email, password);
+  const dispatch = useAppDispatch();
+
+  const handleRegister = async () => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+
+    data.user && dispatch(setUser(data.user));
   };
 
   return (
@@ -32,17 +42,21 @@ const login = () => {
           secureTextEntry={true}
           onChangeText={(password) => setPassword(password)}
         />
-        <TouchableOpacity className="w-full my-3">
-          <Text className="text-right text-blue-500">Forgot Password?</Text>
-        </TouchableOpacity>
+        <TextInput
+          className="w-full h-12 p-2.5 text-black mt-2.5 border border-gray-200 rounded"
+          placeholder="Confirm Password"
+          placeholderTextColor="#003f5c"
+          secureTextEntry={true}
+          onChangeText={(password) => setPassword(password)}
+        />
 
-        <TouchableOpacity className="w-full">
-          <Button onPress={handleLogIn} title={"Sign in"}></Button>
+        <TouchableOpacity className="w-full mt-2">
+          <Button onPress={handleRegister} title={"Sign Up"}></Button>
         </TouchableOpacity>
-        <Link href={"/auth/register"} asChild>
+        <Link href={"/auth/login"} asChild>
           <TouchableOpacity className="w-full my-2 flex flex-row justify-center gap-x-1">
-            <Text className="">Don't you have an account?</Text>
-            <Text className="text-blue-500">Sign Up</Text>
+            <Text className="">Do you have an account?</Text>
+            <Text className="text-blue-500">Sign In</Text>
           </TouchableOpacity>
         </Link>
       </View>
@@ -50,4 +64,4 @@ const login = () => {
   );
 };
 
-export default login;
+export default register;
