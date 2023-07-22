@@ -1,3 +1,4 @@
+import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -6,7 +7,6 @@ import Logo from "../../components/Logo";
 import { useAppDispatch } from "../../redux/hooks";
 import { setUser } from "../../redux/slicers/userSlicer";
 import { supabase } from "../../services/supabase";
-import { Link, useRouter } from "expo-router";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -50,12 +50,15 @@ const Login = () => {
           <Button onPress={handleLogIn} title={"Sign in"}></Button>
         </TouchableOpacity>
 
-        <Link href="/auth/register" asChild>
-          <TouchableOpacity className="w-full my-2 flex flex-row justify-center gap-x-1">
-            <Text className="">Don't you have an account?</Text>
-            <Text className="text-blue-500">Sign Up</Text>
-          </TouchableOpacity>
-        </Link>
+        <TouchableOpacity
+          onPress={() => {
+            router.push("register");
+          }}
+          className="w-full my-2 flex flex-row justify-center gap-x-1"
+        >
+          <Text className="">Don't you have an account?</Text>
+          <Text className="text-blue-500">Sign Up</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

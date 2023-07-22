@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { Text, TextInput, TouchableOpacity, View, Image } from "react-native";
+import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import Logo from "../../components/Logo";
+import React, { useState } from "react";
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Button } from "react-native-elements";
-import { Link, useRouter } from "expo-router";
-import { supabase } from "../../services/supabase";
-import { setUser } from "../../redux/slicers/userSlicer";
+import Logo from "../../components/Logo";
 import { useAppDispatch } from "../../redux/hooks";
+import { setUser } from "../../redux/slicers/userSlicer";
+import { supabase } from "../../services/supabase";
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -55,7 +55,12 @@ const Register = () => {
           <Button onPress={handleRegister} title={"Sign Up"}></Button>
         </TouchableOpacity>
 
-        <TouchableOpacity className="w-full my-2 flex flex-row justify-center gap-x-1">
+        <TouchableOpacity
+          onPress={() => {
+            router.push("login");
+          }}
+          className="w-full my-2 flex flex-row justify-center gap-x-1"
+        >
           <Text className="">Do you have an account?</Text>
           <Text className="text-blue-500">Sign In</Text>
         </TouchableOpacity>

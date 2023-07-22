@@ -1,13 +1,13 @@
 import {
-  createDrawerNavigator,
   DrawerContentScrollView,
-  DrawerItemList,
   DrawerItem,
+  DrawerItemList,
+  createDrawerNavigator,
 } from "@react-navigation/drawer";
 import index from ".";
-import { supabase } from "../../services/supabase";
 import { useAppDispatch } from "../../redux/hooks";
 import { removeUser } from "../../redux/slicers/userSlicer";
+import { supabase } from "../../services/supabase";
 
 const Drawer = createDrawerNavigator();
 
