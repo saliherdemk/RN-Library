@@ -3,15 +3,16 @@ import { Text, TextInput, TouchableOpacity, View, Image } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import Logo from "../../components/Logo";
 import { Button } from "react-native-elements";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { supabase } from "../../services/supabase";
 import { setUser } from "../../redux/slicers/userSlicer";
 import { useAppDispatch } from "../../redux/hooks";
 
-const register = () => {
+const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const router = useRouter();
   const dispatch = useAppDispatch();
 
   const handleRegister = async () => {
@@ -21,6 +22,7 @@ const register = () => {
     });
 
     data.user && dispatch(setUser(data.user));
+    router.push("/");
   };
 
   return (
@@ -64,4 +66,4 @@ const register = () => {
   );
 };
 
-export default register;
+export default Register;

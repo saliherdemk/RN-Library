@@ -3,14 +3,26 @@ import { Text, TextInput, TouchableOpacity, View, Image } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import Logo from "../../components/Logo";
 import { Button } from "react-native-elements";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
+import { supabase } from "../../services/supabase";
+import { useAppDispatch } from "../../redux/hooks";
+import { setUser } from "../../redux/slicers/userSlicer";
 
-const login = () => {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogIn = () => {
-    console.log(email, password);
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+
+  const handleLogIn = async () => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    data.user && dispatch(setUser(data.user));
+    router.push("/");
   };
 
   return (
@@ -50,4 +62,4 @@ const login = () => {
   );
 };
 
-export default login;
+export default Login;
