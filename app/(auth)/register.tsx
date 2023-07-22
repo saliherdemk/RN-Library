@@ -12,8 +12,8 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const router = useRouter();
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const handleRegister = async () => {
     const { data, error } = await supabase.auth.signUp({
@@ -22,7 +22,6 @@ const Register = () => {
     });
 
     data.user && dispatch(setUser(data.user));
-    router.push("/");
   };
 
   return (
@@ -55,12 +54,11 @@ const Register = () => {
         <TouchableOpacity className="w-full mt-2">
           <Button onPress={handleRegister} title={"Sign Up"}></Button>
         </TouchableOpacity>
-        <Link href={"/auth/login"} asChild>
-          <TouchableOpacity className="w-full my-2 flex flex-row justify-center gap-x-1">
-            <Text className="">Do you have an account?</Text>
-            <Text className="text-blue-500">Sign In</Text>
-          </TouchableOpacity>
-        </Link>
+
+        <TouchableOpacity className="w-full my-2 flex flex-row justify-center gap-x-1">
+          <Text className="">Do you have an account?</Text>
+          <Text className="text-blue-500">Sign In</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
