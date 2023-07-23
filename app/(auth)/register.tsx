@@ -31,20 +31,20 @@ const Register = () => {
       <View className="w-5/6 px-8 py-5 flex bg-white rounded-md shadow items-center">
         <Logo />
         <TextInput
-          className="w-full h-12 p-2.5 text-black mt-2.5 border border-gray-200 rounded"
+          className="w-full h-12 p-2.5 text-black mt-2.5 border border-gray-200 rounded focus:border-sky-300"
           placeholder="Email"
           placeholderTextColor="#003f5c"
           onChangeText={(email) => setEmail(email)}
         />
         <TextInput
-          className="w-full h-12 p-2.5 text-black mt-2.5 border border-gray-200 rounded"
+          className="w-full h-12 p-2.5 text-black mt-2.5 border border-gray-200 rounded focus:border-sky-300"
           placeholder="Password"
           placeholderTextColor="#003f5c"
           secureTextEntry={true}
           onChangeText={(password) => setPassword(password)}
         />
         <TextInput
-          className="w-full h-12 p-2.5 text-black mt-2.5 border border-gray-200 rounded"
+          className="w-full h-12 p-2.5 text-black mt-2.5 border border-gray-200 rounded focus:border-sky-300"
           placeholder="Confirm Password"
           placeholderTextColor="#003f5c"
           secureTextEntry={true}

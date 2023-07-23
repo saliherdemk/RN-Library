@@ -1,7 +1,7 @@
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Text, TextInput, TouchableOpacity, View, Alert } from "react-native";
 import { Button } from "react-native-elements";
 import Logo from "../../components/Logo";
 import { useAppDispatch } from "../../redux/hooks";
@@ -11,16 +11,34 @@ import { supabase } from "../../services/supabase";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isBtnLoading, setIsBtnLoading] = useState(false);
+  const [error, setError] = useState<String | null>(null);
 
   const dispatch = useAppDispatch();
   const router = useRouter();
 
   const handleLogIn = async () => {
+    setError(null);
+    if (!email || !password) {
+      alert("All Fields Required");
+      return;
+    }
+    setIsBtnLoading(true);
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
-    data.user && dispatch(setUser(data.user));
+    if (error?.status) {
+      setEmail("");
+      setPassword("");
+      setError("Invalid credentials");
+      return;
+    }
+    if (data.user) {
+      dispatch(setUser(data.user));
+      return;
+    }
+    setIsBtnLoading(false);
   };
 
   return (
@@ -29,17 +47,21 @@ const Login = () => {
 
       <View className="w-5/6 px-8 py-5 flex bg-white rounded-md shadow items-center">
         <Logo />
+        {error && <Text className="text-rose-500">{error}</Text>}
         <TextInput
-          className="w-full h-12 p-2.5 text-black mt-2.5 border border-gray-200 rounded"
+          keyboardType="email-address"
+          className="w-full h-12 p-2.5 text-black mt-2.5 border border-gray-200 rounded focus:border-sky-300"
           placeholder="Email"
-          placeholderTextColor="#003f5c"
+          placeholderTextColor="#808080"
+          value={email}
           onChangeText={(email) => setEmail(email)}
         />
         <TextInput
-          className="w-full h-12 p-2.5 text-black mt-2.5 border border-gray-200 rounded"
+          className="w-full h-12 p-2.5 text-black mt-2.5 border border-gray-200 rounded focus:border-sky-300"
           placeholder="Password"
-          placeholderTextColor="#003f5c"
+          placeholderTextColor="#808080"
           secureTextEntry={true}
+          value={password}
           onChangeText={(password) => setPassword(password)}
         />
         <TouchableOpacity className="w-full my-3">
