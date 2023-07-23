@@ -4,7 +4,7 @@ import {
   DrawerItemList,
   createDrawerNavigator,
 } from "@react-navigation/drawer";
-import index from ".";
+import Index from ".";
 import { useAppDispatch } from "../../redux/hooks";
 import { removeUser } from "../../redux/slicers/userSlicer";
 import { supabase } from "../../services/supabase";
@@ -39,7 +39,7 @@ function HomeLayout() {
           drawerLabel: "Home",
           title: "overview",
         }}
-        component={index}
+        component={Index}
       />
     </Drawer.Navigator>
   );

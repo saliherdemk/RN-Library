@@ -1,12 +1,18 @@
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
-import { Text, TextInput, TouchableOpacity, View, Alert } from "react-native";
-import { Button } from "react-native-elements";
+import {
+  ActivityIndicator,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Logo from "../../components/Logo";
 import { useAppDispatch } from "../../redux/hooks";
 import { setUser } from "../../redux/slicers/userSlicer";
 import { supabase } from "../../services/supabase";
+import { isEmailValid } from "../../helper/validateEmail";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -17,27 +23,52 @@ const Login = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const handleLogIn = async () => {
+  const clear = () => {
+    setEmail("");
+    setPassword("");
+    setIsBtnLoading(false);
+  };
+
+  const checkErrors = () => {
     setError(null);
     if (!email || !password) {
       alert("All Fields Required");
+      setIsBtnLoading(false);
+
       return;
     }
+
+    if (!isEmailValid(email)) {
+      setError("Please enter a valid email.");
+      setIsBtnLoading(false);
+      return true;
+    }
+
+    if (password.length < 6) {
+      setError("Password should be at least 6 characters");
+      setIsBtnLoading(false);
+      return true;
+    }
+  };
+  const handleLogIn = async () => {
     setIsBtnLoading(true);
+    if (checkErrors()) return;
+
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
+
     if (error?.status) {
-      setEmail("");
-      setPassword("");
       setError("Invalid credentials");
+      clear();
       return;
     }
     if (data.user) {
       dispatch(setUser(data.user));
       return;
     }
+    setError("Unexpected error");
     setIsBtnLoading(false);
   };
 
@@ -68,8 +99,17 @@ const Login = () => {
           <Text className="text-right text-blue-500">Forgot Password?</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity className="w-full">
-          <Button onPress={handleLogIn} title={"Sign in"}></Button>
+        <TouchableOpacity
+          onPress={handleLogIn}
+          className="w-full bg-blue-500 rounded py-2"
+        >
+          {isBtnLoading ? (
+            <ActivityIndicator className="h-6" color="#f2f2f2" size={30} />
+          ) : (
+            <Text className="text-center text-white font-semibold text-base">
+              Sign In
+            </Text>
+          )}
         </TouchableOpacity>
 
         <TouchableOpacity
