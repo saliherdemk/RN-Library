@@ -8,5 +8,5 @@ export default function Page() {
   if (!user) {
     return <Redirect href="/login" />;
   }
-  return <Redirect href="/home" />;
+  return <Redirect href="/books" />;
 }
