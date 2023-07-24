@@ -8,15 +8,15 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import Logo from "../../components/Logo";
-import { useAppDispatch } from "../../redux/hooks";
-import { setUser } from "../../redux/slicers/userSlicer";
-import { supabase } from "../../services/supabase";
-import { isEmailValid } from "../../helper/validateEmail";
+import Logo from "../components/Logo";
+import { useAppDispatch } from "../redux/hooks";
+import { setUser } from "../redux/slicers/userSlicer";
+import { supabase } from "../services/supabase";
+import { isEmailValid } from "../helper/validateEmail";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("saliherdem_kaymak@hotmail.com");
+  const [password, setPassword] = useState("123456");
   const [isBtnLoading, setIsBtnLoading] = useState(false);
   const [error, setError] = useState<String | null>(null);
 
@@ -66,6 +66,7 @@ const Login = () => {
     }
     if (data.user) {
       dispatch(setUser(data.user));
+      router.replace("/");
       return;
     }
     setError("Unexpected error");

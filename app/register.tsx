@@ -8,14 +8,14 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Button } from "react-native-elements";
-import Logo from "../../components/Logo";
-import { useAppDispatch } from "../../redux/hooks";
-import { setUser } from "../../redux/slicers/userSlicer";
-import { supabase } from "../../services/supabase";
-import { isEmailValid } from "../../helper/validateEmail";
+import Logo from "../components/Logo";
+import { isEmailValid } from "../helper/validateEmail";
+import { useAppDispatch } from "../redux/hooks";
+import { setUser } from "../redux/slicers/userSlicer";
+import { supabase } from "../services/supabase";
 
 const Register = () => {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -27,6 +27,7 @@ const Register = () => {
   const router = useRouter();
 
   const clear = () => {
+    setUsername("");
     setEmail("");
     setPassword("");
     setConfirmPassword("");
@@ -66,6 +67,19 @@ const Register = () => {
     setIsBtnLoading(true);
     if (checkErrors()) return;
 
+    const { data: usernameData, error: usernameErr } = await supabase
+      .from("users")
+      .select()
+      .eq("username", username)
+      .maybeSingle();
+
+    console.log(usernameErr);
+    if (usernameData) {
+      setError("Username already taken");
+      setIsBtnLoading(false);
+      return;
+    }
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -78,7 +92,13 @@ const Register = () => {
     }
 
     if (data.user) {
+      const { error } = await supabase
+        .from("users")
+        .insert({ id: data.user.id, username: username });
+
       dispatch(setUser(data.user));
+      router.replace("/");
+
       return;
     }
     setError("Unexpected error");
@@ -92,6 +112,14 @@ const Register = () => {
       <View className="w-5/6 px-8 py-5 flex bg-white rounded-md shadow items-center">
         <Logo />
         {error && <Text className="text-rose-500">{error}</Text>}
+
+        <TextInput
+          className="w-full h-12 p-2.5 text-black my-1.5 border border-gray-200 rounded focus:border-sky-300"
+          placeholder="Username"
+          placeholderTextColor="#003f5c"
+          value={username}
+          onChangeText={(username) => setUsername(username)}
+        />
 
         <TextInput
           className="w-full h-12 p-2.5 text-black my-1.5 border border-gray-200 rounded focus:border-sky-300"
