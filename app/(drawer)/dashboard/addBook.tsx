@@ -10,6 +10,7 @@ import {
   View,
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const AddBook = () => {
   const [title, setTitle] = useState("");
@@ -39,8 +40,7 @@ const AddBook = () => {
 
   return (
     <>
-      <View className="flex-1 py-12 items-center px-8 gap-3">
-        <Text className="text-lg">Cover</Text>
+      <SafeAreaView className="flex-1 pt-[5%] items-center px-8 gap-3">
         <TouchableOpacity
           className="rounded-full overflow-hidden w-40 h-40 bg-white shadow "
           onPress={pickImage}
@@ -100,7 +100,7 @@ const AddBook = () => {
             </Text>
           )}
         </TouchableOpacity>
-        <Pressable
+        {/* <Pressable
           onPress={() => {
             router.back();
           }}
@@ -109,8 +109,8 @@ const AddBook = () => {
           <Text className="text-center text-white font-semibold text-base">
             Cancel
           </Text>
-        </Pressable>
-      </View>
+        </Pressable> */}
+      </SafeAreaView>
     </>
   );
 };

@@ -13,6 +13,7 @@ import { isEmailValid } from "../helper/validateEmail";
 import { useAppDispatch } from "../redux/hooks";
 import { setUser } from "../redux/slicers/userSlicer";
 import { supabase } from "../services/supabase";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -106,7 +107,7 @@ const Register = () => {
   };
 
   return (
-    <View className="flex-1 items-center justify-center ">
+    <SafeAreaView className="flex-1 items-center justify-center ">
       <StatusBar style="auto" />
 
       <View className="w-5/6 px-8 py-5 flex bg-white rounded-md shadow items-center">
@@ -170,7 +171,7 @@ const Register = () => {
           <Text className="text-blue-500">Sign In</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

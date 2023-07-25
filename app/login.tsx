@@ -10,9 +10,10 @@ import {
 } from "react-native";
 import Logo from "../components/Logo";
 import { useAppDispatch } from "../redux/hooks";
-import { setUser } from "../redux/slicers/userSlicer";
+import { setUser, setUserImageUrl } from "../redux/slicers/userSlicer";
 import { supabase } from "../services/supabase";
 import { isEmailValid } from "../helper/validateEmail";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Login = () => {
   const [email, setEmail] = useState("saliherdem_kaymak@hotmail.com");
@@ -66,6 +67,7 @@ const Login = () => {
     }
     if (data.user) {
       dispatch(setUser(data.user));
+      downloadImage(data.user.id);
       router.replace("/");
       return;
     }
@@ -73,8 +75,28 @@ const Login = () => {
     setIsBtnLoading(false);
   };
 
+  // https://supabase.com/docs/guides/getting-started/tutorials/with-expo#create-an-upload-widget
+  async function downloadImage(path: string): Promise<void> {
+    try {
+      const { data } = await supabase.storage.from("avatars").download(path);
+      if (!data) {
+        dispatch(setUserImageUrl(null));
+        return;
+      }
+      const fr = new FileReader();
+      fr.readAsDataURL(data);
+      fr.onload = () => {
+        dispatch(setUserImageUrl(fr.result as string));
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log("Error downloading image: ", error.message);
+      }
+    }
+  }
+
   return (
-    <View className="flex-1 items-center justify-center ">
+    <SafeAreaView className="flex-1 items-center justify-center ">
       <StatusBar style="auto" />
 
       <View className="w-5/6 px-8 py-5 flex bg-white rounded-md shadow items-center">
@@ -123,7 +145,7 @@ const Login = () => {
           <Text className="text-blue-500">Sign Up</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

@@ -7,10 +7,14 @@ import { User } from "@supabase/supabase-js";
 // https://github.com/orgs/supabase/discussions/2222
 export interface userState {
   user: User | null;
+  userData: Object | null;
+  userImageUrl: string | null;
 }
 
 const initialState: userState = {
   user: null,
+  userData: null,
+  userImageUrl: null,
 };
 
 export const userSlice = createSlice({
@@ -20,12 +24,20 @@ export const userSlice = createSlice({
     setUser: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
     },
+
+    setUserImageUrl: (state, action: PayloadAction<string | null>) => {
+      state.userImageUrl = action.payload;
+    },
+
     removeUser: (state, _) => {
+      console.log("asd");
       state.user = null;
+      state.userData = null;
+      state.userImageUrl = null;
     },
   },
 });
 
-export const { setUser, removeUser } = userSlice.actions;
+export const { setUser, setUserImageUrl, removeUser } = userSlice.actions;
 
 export default userSlice.reducer;
