@@ -10,10 +10,15 @@ import {
 } from "react-native";
 import Logo from "../components/Logo";
 import { useAppDispatch } from "../redux/hooks";
-import { setUser, setUserImageUrl } from "../redux/slicers/userSlicer";
+import {
+  setUser,
+  setUserImageUrl,
+  setuserBooks,
+} from "../redux/slicers/userSlicer";
 import { supabase } from "../services/supabase";
 import { isEmailValid } from "../helper/validateEmail";
 import { SafeAreaView } from "react-native-safe-area-context";
+import BookService from "../services/bookService";
 
 const Login = () => {
   const [email, setEmail] = useState("saliherdem_kaymak@hotmail.com");
@@ -68,7 +73,10 @@ const Login = () => {
     }
     if (data.user) {
       dispatch(setUser(data.user));
-      downloadImage(data.user.id);
+      await downloadImage(data.user.id);
+      // dispatch(
+      //   setuserBooks(await BookService.getBooksByPublisher(data.user.id))
+      // );
       router.replace("/");
       return;
     }

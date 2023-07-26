@@ -7,26 +7,22 @@ import { Link, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BookService from "../../../services/bookService";
 import BookComponent from "../../../components/BookComponent";
+import { BookType } from "../../../types/bookTypes";
 
 const Dashboard = () => {
   const user = useAppSelector((state) => state.userData.user);
+  const books: Array<BookType> | null = useAppSelector(
+    (state) => state.userData.userBooks
+  );
+
   const router = useRouter();
-  const [books, setBooks] = useState<Array<Object> | null>(null);
-  const fetchData = async (id: string) => {
-    return await BookService.getBooksByPublisher(id);
-  };
-  useEffect(() => {
-    if (!user?.id) return;
-    fetchData(user?.id).then((data) => {
-      setBooks(data);
-    });
-  }, []);
+
   return (
     <SafeAreaView className="flex-1 p-4 pb-0">
       <Text className="text-center text-2xl mb-2 border-b-2">Books</Text>
       <ScrollView className=" p-5">
         {books &&
-          books.map((book: any) => (
+          books.map((book: BookType) => (
             <BookComponent book={book} key={book.isbn} />
           ))}
       </ScrollView>

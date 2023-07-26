@@ -1,3 +1,4 @@
+import { BookType, b } from "../types/bookTypes";
 import { supabase } from "./supabase";
 
 const getAuthor = async (name: string) => {
@@ -41,8 +42,22 @@ const addBook = async (
     if (isbnData) {
       const { data: authBookData, error: authBookErr } = await supabase
         .from("AuthorBook")
-        .insert({ author, book: isbnData.isbn });
-      hasErr = hasErr && authBookErr != null;
+        .insert({ author, book: isbnData.isbn })
+        .select(
+          "author,id,book(cover_url,created_at,isbn,title,type,users(username))"
+        )
+        .single();
+
+      // let bookObj: BookType = {
+      //   AuthorBook: [{ author: authBookData?.author, id: authBookData?.id }],
+      //   cover_url: authBookData?.book.cover_url,
+      //   created_at: authBookData?.book.created_at,
+      //   isbn: authBookData?.book.isbn,
+      //   title: authBookData?.book.title,
+      //   type: authBookData?.book.type,
+      //   users: authBookData?.bookb.users,
+      // };
+      // hasErr = hasErr && authBookErr != null;
     }
   }
 

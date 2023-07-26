@@ -3,16 +3,14 @@ import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   Image,
-  Pressable,
   Text,
   TouchableOpacity,
   View,
-  Alert,
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { supabase } from "../../../services/supabase";
 import { useAppSelector } from "../../../redux/hooks";
 import BookService from "../../../services/bookService";
 
@@ -64,7 +62,7 @@ const AddBook = () => {
       "",
       authors
     );
-    if (errorObject.err) {
+    if (errorObject?.err) {
       setError(errorObject.err);
       setIsBtnLoading(false);
       return;

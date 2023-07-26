@@ -74,7 +74,6 @@ const Register = () => {
       .eq("username", username)
       .maybeSingle();
 
-    console.log(usernameErr);
     if (usernameData) {
       setError("Username already taken");
       setIsBtnLoading(false);

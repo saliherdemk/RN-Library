@@ -3,24 +3,9 @@ import React from "react";
 import { formatDate } from "../helper/formatDate";
 import { Button } from "react-native-elements";
 import BookService from "../services/bookService";
-
-interface BookType {
-  AuthorBook: Array<AuthBook>;
-  cover_url: string;
-  isbn: string;
-  title: string;
-  type: string;
-  users: { username: string };
-  created_at: string;
-}
-
-interface AuthBook {
-  author: string;
-  id: number;
-}
+import { BookType, AuthBook } from "../types/bookTypes";
 
 const BookComponent = ({ book }: { book: BookType }) => {
-  console.log(book);
   const handleDeletion = () => {
     Alert.alert("Delete Book", "You can not undo this action", [
       {
