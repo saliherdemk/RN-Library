@@ -29,8 +29,19 @@ export const userSlice = createSlice({
       state.userImageUrl = action.payload;
     },
 
-    setuserBooks: (state, action: PayloadAction<Array<BookType> | null>) => {
+    setUserBooks: (state, action: PayloadAction<Array<BookType> | null>) => {
       state.userBooks = action.payload;
+    },
+    addBookToUserBooks: (state, action: PayloadAction<BookType>) => {
+      state.userBooks = state.userBooks
+        ? [...state.userBooks, action.payload]
+        : [action.payload];
+    },
+
+    removeBookFromUserBooks: (state, action: PayloadAction<string>) => {
+      state.userBooks = state.userBooks
+        ? state.userBooks.filter((book) => book.isbn !== action.payload)
+        : null;
     },
 
     removeUser: (state, _) => {
@@ -41,7 +52,13 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setUser, setUserImageUrl, setuserBooks, removeUser } =
-  userSlice.actions;
+export const {
+  setUser,
+  setUserImageUrl,
+  setUserBooks,
+  addBookToUserBooks,
+  removeBookFromUserBooks,
+  removeUser,
+} = userSlice.actions;
 
 export default userSlice.reducer;

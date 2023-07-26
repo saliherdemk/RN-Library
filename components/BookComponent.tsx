@@ -4,8 +4,11 @@ import { formatDate } from "../helper/formatDate";
 import { Button } from "react-native-elements";
 import BookService from "../services/bookService";
 import { BookType, AuthBook } from "../types/bookTypes";
+import { useAppDispatch } from "../redux/hooks";
+import { removeBookFromUserBooks } from "../redux/slicers/userSlicer";
 
 const BookComponent = ({ book }: { book: BookType }) => {
+  const dispatch = useAppDispatch();
   const handleDeletion = () => {
     Alert.alert("Delete Book", "You can not undo this action", [
       {
@@ -17,8 +20,9 @@ const BookComponent = ({ book }: { book: BookType }) => {
       },
       {
         text: "OK",
-        onPress: () => {
-          BookService.deleteBook(book.isbn);
+        onPress: async () => {
+          const err = await BookService.deleteBook(book.isbn);
+          !err && dispatch(removeBookFromUserBooks(book.isbn));
         },
       },
     ]);

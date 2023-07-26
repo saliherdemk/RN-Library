@@ -11,8 +11,12 @@ import {
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useAppSelector } from "../../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import BookService from "../../../services/bookService";
+import {
+  addBookToUserBooks,
+  setUserBooks,
+} from "../../../redux/slicers/userSlicer";
 
 const AddBook = () => {
   const [title, setTitle] = useState("asd");
@@ -21,6 +25,7 @@ const AddBook = () => {
   const [authors, setAuthors] = useState("asdqwe");
   const [error, setError] = useState<string | null>(null);
   const user = useAppSelector((state) => state.userData.user);
+  const dispatch = useAppDispatch();
 
   const [image, setImage] = useState<string | null>(null);
   const [isBtnLoading, setIsBtnLoading] = useState(false);
@@ -54,7 +59,7 @@ const AddBook = () => {
     setIsBtnLoading(true);
     if (checkErrors()) return;
 
-    const errorObject = await BookService.addBook(
+    const response = await BookService.addBook(
       isbn,
       user?.id,
       type,
@@ -62,11 +67,14 @@ const AddBook = () => {
       "",
       authors
     );
-    if (errorObject?.err) {
-      setError(errorObject.err);
+    if (response?.err) {
+      setError(response.err);
       setIsBtnLoading(false);
       return;
     }
+    // @ts-expect-error
+    dispatch(addBookToUserBooks(response.data)); // supabase return object but it seems as an array. couldn't figure it out what is happening here.
+
     Alert.alert(
       "Completed!",
       "Book successfully added",

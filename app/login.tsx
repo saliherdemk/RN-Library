@@ -12,8 +12,8 @@ import Logo from "../components/Logo";
 import { useAppDispatch } from "../redux/hooks";
 import {
   setUser,
+  setUserBooks,
   setUserImageUrl,
-  setuserBooks,
 } from "../redux/slicers/userSlicer";
 import { supabase } from "../services/supabase";
 import { isEmailValid } from "../helper/validateEmail";
@@ -74,9 +74,11 @@ const Login = () => {
     if (data.user) {
       dispatch(setUser(data.user));
       await downloadImage(data.user.id);
-      // dispatch(
-      //   setuserBooks(await BookService.getBooksByPublisher(data.user.id))
-      // );
+
+      dispatch(
+        // @ts-expect-error
+        setUserBooks(await BookService.getBooksByPublisher(data.user.id))
+      );
       router.replace("/");
       return;
     }

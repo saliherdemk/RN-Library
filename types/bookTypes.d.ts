@@ -26,12 +26,3 @@ export interface authBookData {
     };
   };
 }
-
-export interface b {
-  cover_url: any;
-  isbn: any;
-  title: any;
-  type: any;
-  users: { username: any };
-  created_at: any;
-}
