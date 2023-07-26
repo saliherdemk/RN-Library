@@ -8,17 +8,24 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Alert,
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { supabase } from "../../../services/supabase";
+import { useAppSelector } from "../../../redux/hooks";
+import BookService from "../../../services/bookService";
 
 const AddBook = () => {
-  const [title, setTitle] = useState("");
-  const [isbn, setIsbn] = useState("");
-  const [type, setType] = useState("");
+  const [title, setTitle] = useState("asd");
+  const [isbn, setIsbn] = useState("qwe");
+  const [type, setType] = useState("asd");
+  const [authors, setAuthors] = useState("asdqwe");
+  const [error, setError] = useState<string | null>(null);
+  const user = useAppSelector((state) => state.userData.user);
+
   const [image, setImage] = useState<string | null>(null);
   const [isBtnLoading, setIsBtnLoading] = useState(false);
-
   const router = useRouter();
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -34,8 +41,41 @@ const AddBook = () => {
     }
   };
 
-  const handleSubmit = () => {
+  const checkErrors = (): boolean => {
+    setError(null);
+    if (!title || !isbn || !type || !authors) {
+      alert("All Text Fields Required");
+      setIsBtnLoading(false);
+      return true;
+    }
+
+    return false;
+  };
+
+  const handleSubmit = async () => {
     setIsBtnLoading(true);
+    if (checkErrors()) return;
+
+    const errorObject = await BookService.addBook(
+      isbn,
+      user?.id,
+      type,
+      title,
+      "",
+      authors
+    );
+    if (errorObject.err) {
+      setError(errorObject.err);
+      setIsBtnLoading(false);
+      return;
+    }
+    Alert.alert(
+      "Completed!",
+      "Book successfully added",
+      [{ text: "Okay", onPress: () => router.back() }],
+      { cancelable: false }
+    );
+    setIsBtnLoading(false);
   };
 
   return (
@@ -57,6 +97,7 @@ const AddBook = () => {
             />
           }
         </TouchableOpacity>
+        {error && <Text className="text-rose-500">{error}</Text>}
 
         <View className="w-full ">
           <Text className="text-lg">Title</Text>
@@ -85,6 +126,17 @@ const AddBook = () => {
             placeholderTextColor="#808080"
             value={type}
             onChangeText={(type) => setType(type)}
+          />
+        </View>
+
+        <View className="w-full ">
+          <Text className="text-lg">Author(s)</Text>
+          <TextInput
+            className="w-full bg-white h-12 p-2.5 text-black mt-2.5 border border-gray-200 rounded focus:border-sky-300"
+            placeholderTextColor="#808080"
+            placeholder="Author1 - Author2 - Author3 "
+            value={authors}
+            onChangeText={(authors) => setAuthors(authors)}
           />
         </View>
 

@@ -36,7 +36,7 @@ const Login = () => {
       alert("All Fields Required");
       setIsBtnLoading(false);
 
-      return;
+      return true;
     }
 
     if (!isEmailValid(email)) {
@@ -51,6 +51,7 @@ const Login = () => {
       return true;
     }
   };
+
   const handleLogIn = async () => {
     setIsBtnLoading(true);
     if (checkErrors()) return;
