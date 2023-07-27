@@ -12,8 +12,8 @@ import {
 import { TextInput } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { addBookToUserBooks } from "../../../redux/slicers/userSlicer";
 import BookService from "../../../services/bookService";
-import {} from "../../../redux/slicers/userSlicer";
 import { addBookToBooks } from "../../../redux/slicers/bookSlicer";
 
 const AddBook = () => {
@@ -71,6 +71,7 @@ const AddBook = () => {
       return;
     }
 
+    dispatch(addBookToUserBooks(response.data));
     dispatch(addBookToBooks(response.data));
 
     Alert.alert(

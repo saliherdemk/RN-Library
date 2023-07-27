@@ -183,15 +183,13 @@ const getBookByISBN = async (isbn: string) => {
   return data;
 };
 
-const getUsersBooks = async () => {
-  const user = useAppSelector((state) => state.userData.user);
-
+const getUsersBooks = async (id: string) => {
   const { data, error } = await supabase
     .from("books")
     .select(
       "isbn, created_at,title,type,cover_url,users(username), AuthorBook(author,id)"
     )
-    .eq("publisher_id", user?.id)
+    .eq("publisher_id", id)
     .order("created_at", { ascending: false });
 
   return data;

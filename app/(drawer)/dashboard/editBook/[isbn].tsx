@@ -13,6 +13,7 @@ import { TextInput } from "react-native-gesture-handler";
 import { Stack, useRouter } from "expo-router";
 import { useDispatch } from "react-redux";
 import { editBookFromUserBooks } from "../../../../redux/slicers/userSlicer";
+import { editBookFromBooks } from "../../../../redux/slicers/bookSlicer";
 
 const EditBook = () => {
   const { isbn } = useSearchParams();
@@ -36,7 +37,10 @@ const EditBook = () => {
       setIsBtnLoading(false);
       return;
     }
-    Obj.data && dispatch(editBookFromUserBooks(Obj.data));
+    if (Obj.data) {
+      dispatch(editBookFromUserBooks(Obj.data));
+      dispatch(editBookFromBooks(Obj.data));
+    }
     router.back();
   };
 

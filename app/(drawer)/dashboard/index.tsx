@@ -9,18 +9,13 @@ import BookComponent from "../../../components/BookComponent";
 import { BookType } from "../../../types/bookTypes";
 import { useDispatch } from "react-redux";
 import { removeBookFromBooks } from "../../../redux/slicers/bookSlicer";
+import { useAppSelector } from "../../../redux/hooks";
+import { removeBookFromUserBooks } from "../../../redux/slicers/userSlicer";
 
 const Dashboard = () => {
-  const [books, setBooks] = useState<Array<BookType> | null>(null);
+  const books = useAppSelector((state) => state.userData.userBooks);
   const router = useRouter();
   const dispatch = useDispatch();
-
-  const fetchBooks = async () => {
-    setBooks(await BookService.getUsersBooks());
-  };
-  useEffect(() => {
-    fetchBooks();
-  }, []);
 
   const handleDeletion = (isbn: string) => {
     Alert.alert("Delete Book", "You can not undo this action", [
@@ -35,7 +30,10 @@ const Dashboard = () => {
         text: "OK",
         onPress: async () => {
           const err = await BookService.deleteBook(isbn);
-          !err && dispatch(removeBookFromBooks(isbn));
+          if (!err) {
+            dispatch(removeBookFromBooks(isbn));
+            dispatch(removeBookFromUserBooks(isbn));
+          }
         },
       },
     ]);

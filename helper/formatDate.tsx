@@ -1,20 +1,14 @@
 export function formatDate(date: string) {
-  let objectDate = new Date(date);
+  const objectDate = new Date(date);
 
-  let day = objectDate.getDate();
+  const day = objectDate.getDate().toString().padStart(2, "0");
+  const month = (objectDate.getMonth() + 1).toString().padStart(2, "0");
+  const year = objectDate.getFullYear();
+  const hours = objectDate.getHours().toString().padStart(2, "0");
+  const minutes = objectDate.getMinutes().toString().padStart(2, "0");
 
-  let month = objectDate.getMonth().toString();
+  const dateRes = `${day}-${month}-${year}`;
+  const hoursRes = `${hours}:${minutes}`;
 
-  let year = objectDate.getFullYear();
-
-  let hours = objectDate.getHours();
-
-  let minutes = objectDate.getMinutes();
-  if (month.length == 1) {
-    month = ("0" + month).toString();
-  }
-  let dateRes = day + "-" + month + "-" + year;
-  let hoursRes = hours + ":" + minutes;
-
-  return dateRes + " | " + hoursRes;
+  return `${dateRes} | ${hoursRes}`;
 }

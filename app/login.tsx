@@ -10,7 +10,11 @@ import {
 } from "react-native";
 import Logo from "../components/Logo";
 import { useAppDispatch } from "../redux/hooks";
-import { setUser, setUserImageUrl } from "../redux/slicers/userSlicer";
+import {
+  setUser,
+  setUserBooks,
+  setUserImageUrl,
+} from "../redux/slicers/userSlicer";
 import { supabase } from "../services/supabase";
 import { isEmailValid } from "../helper/validateEmail";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -72,6 +76,8 @@ const Login = () => {
       dispatch(setUser(data.user));
 
       dispatch(setBooks(await BookService.getBooks()));
+      dispatch(setUserBooks(await BookService.getUsersBooks(data.user.id)));
+
       await downloadImage(data.user.id);
 
       router.replace("/");
