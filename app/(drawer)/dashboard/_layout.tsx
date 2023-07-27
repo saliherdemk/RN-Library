@@ -8,6 +8,10 @@ export default () => {
         name="addBook"
         options={{ headerShown: true, presentation: "modal" }}
       />
+      <Stack.Screen
+        name="editBook/[isbn]"
+        options={{ headerShown: true, presentation: "modal" }}
+      />
     </Stack>
   );
 };

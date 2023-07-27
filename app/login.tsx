@@ -73,12 +73,12 @@ const Login = () => {
     }
     if (data.user) {
       dispatch(setUser(data.user));
-      await downloadImage(data.user.id);
-
       dispatch(
         // @ts-expect-error
         setUserBooks(await BookService.getBooksByPublisher(data.user.id))
       );
+      await downloadImage(data.user.id);
+
       router.replace("/");
       return;
     }

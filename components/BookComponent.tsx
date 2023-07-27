@@ -6,9 +6,11 @@ import BookService from "../services/bookService";
 import { BookType, AuthBook } from "../types/bookTypes";
 import { useAppDispatch } from "../redux/hooks";
 import { removeBookFromUserBooks } from "../redux/slicers/userSlicer";
+import { useRouter } from "expo-router";
 
 const BookComponent = ({ book }: { book: BookType }) => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const handleDeletion = () => {
     Alert.alert("Delete Book", "You can not undo this action", [
       {
@@ -26,6 +28,13 @@ const BookComponent = ({ book }: { book: BookType }) => {
         },
       },
     ]);
+  };
+
+  const handleEdit = () => {
+    router.push({
+      pathname: "dashboard/editBook/[isbn]",
+      params: { isbn: book.isbn },
+    });
   };
   return (
     <View className="w-full mb-4 flex items-center bg-white shadow rounded ">
@@ -68,7 +77,10 @@ const BookComponent = ({ book }: { book: BookType }) => {
             Delete
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity className="flex-1 bg-blue-500 rounded-br py-2">
+        <TouchableOpacity
+          onPress={handleEdit}
+          className="flex-1 bg-blue-500 rounded-br py-2"
+        >
           <Text className="text-center text-white font-semibold text-base">
             Edit
           </Text>

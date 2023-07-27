@@ -7,13 +7,13 @@ import { BookType } from "../../types/bookTypes";
 // https://github.com/orgs/supabase/discussions/2222
 export interface userState {
   user: User | null;
-  userBooks: Array<BookType> | null;
+  userBooks: Array<BookType>;
   userImageUrl: string | null;
 }
 
 const initialState: userState = {
   user: null,
-  userBooks: null,
+  userBooks: [],
   userImageUrl: null,
 };
 
@@ -29,24 +29,40 @@ export const userSlice = createSlice({
       state.userImageUrl = action.payload;
     },
 
-    setUserBooks: (state, action: PayloadAction<Array<BookType> | null>) => {
+    setUserBooks: (state, action: PayloadAction<Array<BookType>>) => {
       state.userBooks = action.payload;
     },
+
     addBookToUserBooks: (state, action: PayloadAction<BookType>) => {
       state.userBooks = state.userBooks
-        ? [...state.userBooks, action.payload]
+        ? [action.payload, ...state.userBooks]
         : [action.payload];
+    },
+
+    editBookFromUserBooks: (state, action: PayloadAction<BookType>) => {
+      let updatedBook = action.payload;
+
+      state.userBooks = state.userBooks.map((book) =>
+        book.isbn == updatedBook.isbn
+          ? {
+              ...updatedBook,
+              created_at: book.created_at,
+              isbn: book.isbn,
+              users: book.users,
+            }
+          : book
+      );
     },
 
     removeBookFromUserBooks: (state, action: PayloadAction<string>) => {
       state.userBooks = state.userBooks
         ? state.userBooks.filter((book) => book.isbn !== action.payload)
-        : null;
+        : [];
     },
 
     removeUser: (state, _) => {
       state.user = null;
-      state.userBooks = null;
+      state.userBooks = [];
       state.userImageUrl = null;
     },
   },
@@ -57,6 +73,7 @@ export const {
   setUserImageUrl,
   setUserBooks,
   addBookToUserBooks,
+  editBookFromUserBooks,
   removeBookFromUserBooks,
   removeUser,
 } = userSlice.actions;

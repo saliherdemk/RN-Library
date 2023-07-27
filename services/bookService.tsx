@@ -30,23 +30,12 @@ const addBook = async (
     .insert({ isbn, publisher_id, type, title, cover_url: "" })
     .select("isbn,type,title,cover_url,created_at,publisher_id(username)")
     .single();
-
   if (bookErr?.code == "23505") {
     return { err: "This book already exists", data: null };
   }
 
   var authorArray = authors.split("-");
   var hasErr = false;
-
-  let bookObj = {
-    AuthorBook: [] as { author: any; id: any }[],
-    cover_url: bookData?.cover_url,
-    created_at: bookData?.created_at,
-    isbn: bookData?.isbn,
-    title: bookData?.title,
-    type: bookData?.type,
-    users: bookData?.publisher_id,
-  };
 
   let authorArr = [];
   for (let i = 0; i < authorArray.length; i++) {
@@ -66,11 +55,22 @@ const addBook = async (
       hasErr = hasErr && authBookErr != null;
     }
   }
-  bookObj.AuthorBook = authorArr;
 
   if (hasErr) {
     return { err: "Something went wrong during the insertion", data: null };
   }
+
+  let bookObj = {
+    AuthorBook: [] as { author: any; id: any }[],
+    cover_url: bookData?.cover_url,
+    created_at: bookData?.created_at,
+    isbn: bookData?.isbn,
+    title: bookData?.title,
+    type: bookData?.type,
+    users: bookData?.publisher_id,
+  };
+
+  bookObj.AuthorBook = authorArr;
 
   return { err: null, data: bookObj };
 };
@@ -87,15 +87,98 @@ const getBooksByPublisher = async (id: string) => {
   return data;
 };
 
+const getBookByISBN = async (isbn: string) => {
+  const { data, error } = await supabase
+    .from("books")
+    .select(
+      "isbn, created_at,title,type,cover_url,users(username), AuthorBook(author,id)"
+    )
+    .eq("isbn", isbn)
+    .single();
+  return data;
+};
+
 const deleteBook = async (isbn: string) => {
   const { error } = await supabase.from("books").delete().eq("isbn", isbn);
   return error;
+};
+
+const editBook = async (
+  isbn: string,
+  type: string,
+  title: string,
+  cover_url: string,
+  authors: string
+) => {
+  const { error } = await supabase
+    .from("books")
+    .update({ type, title, cover_url })
+    .eq("isbn", isbn);
+
+  if (error) return { err: error.message, data: null };
+  // supabase doen't allow to relational update for now.
+  // Maybe we can write an edge function to handle this butt for now,
+  // lets delete and insert again.
+
+  const { data, error: delErr } = await supabase
+    .from("AuthorBook")
+    .select("id")
+    .eq("book", isbn);
+
+  if (delErr) return { err: "Something went wrong", data: null };
+  let hasError = false;
+  data?.map(async (el) => {
+    console.log(el.id);
+    const { error: delErr } = await supabase
+      .from("AuthorBook")
+      .delete()
+      .eq("id", el.id);
+    hasError = hasError && delErr != null;
+  });
+
+  if (hasError) return { err: "Something went wrong", data: null };
+
+  var authorArray = authors.split("-");
+  var hasErr = false;
+
+  let authorArr = [];
+  for (let i = 0; i < authorArray.length; i++) {
+    const author = await getAuthor(authorArray[i]);
+
+    const { data: authBookData, error: authBookErr } = await supabase
+      .from("AuthorBook")
+      .insert({ author, book: isbn })
+      .select("author,id")
+      .single();
+
+    authorArr.push({
+      author: authBookData?.author,
+      id: authBookData?.id,
+    });
+    hasErr = hasErr && authBookErr != null;
+  }
+  if (hasError) return { err: "Something went wrong", data: null };
+  let bookObj: BookType = {
+    AuthorBook: [] as { author: any; id: any }[],
+    isbn,
+    cover_url: cover_url,
+    title: title,
+    type: type,
+    created_at: "",
+    users: { username: "" },
+  };
+
+  bookObj.AuthorBook = authorArr;
+
+  return { err: null, data: bookObj };
 };
 
 const BookService = {
   addBook,
   getBooksByPublisher,
   deleteBook,
+  editBook,
+  getBookByISBN,
 };
 
 export default BookService;
