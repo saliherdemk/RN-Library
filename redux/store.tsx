@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 import userReducer from "./slicers/userSlicer";
+import bookReducer from "./slicers/bookSlicer";
 
 export const store = configureStore({
   reducer: {
     userData: userReducer,
+    bookData: bookReducer,
   },
 });
 

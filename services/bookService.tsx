@@ -1,4 +1,4 @@
-import { useAppDispatch } from "../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { BookType } from "../types/bookTypes";
 import { supabase } from "./supabase";
 
@@ -73,29 +73,6 @@ const addBook = async (
   bookObj.AuthorBook = authorArr;
 
   return { err: null, data: bookObj };
-};
-
-const getBooksByPublisher = async (id: string) => {
-  const { data, error } = await supabase
-    .from("books")
-    .select(
-      "isbn, created_at,title,type,cover_url,users(username), AuthorBook(author,id)"
-    )
-    .eq("publisher_id", id)
-    .order("created_at", { ascending: false });
-
-  return data;
-};
-
-const getBookByISBN = async (isbn: string) => {
-  const { data, error } = await supabase
-    .from("books")
-    .select(
-      "isbn, created_at,title,type,cover_url,users(username), AuthorBook(author,id)"
-    )
-    .eq("isbn", isbn)
-    .single();
-  return data;
 };
 
 const deleteBook = async (isbn: string) => {
@@ -173,12 +150,61 @@ const editBook = async (
   return { err: null, data: bookObj };
 };
 
+const getBooks = async () => {
+  const { data, error } = await supabase
+    .from("books")
+    .select(
+      "isbn, created_at,title,type,cover_url,users(username), AuthorBook(author,id)"
+    )
+    .order("created_at", { ascending: false });
+  return data;
+};
+
+const getBooksByPublisher = async (id: string) => {
+  const { data, error } = await supabase
+    .from("books")
+    .select(
+      "isbn, created_at,title,type,cover_url,users(username), AuthorBook(author,id)"
+    )
+    .eq("publisher_id", id)
+    .order("created_at", { ascending: false });
+
+  return data;
+};
+
+const getBookByISBN = async (isbn: string) => {
+  const { data, error } = await supabase
+    .from("books")
+    .select(
+      "isbn, created_at,title,type,cover_url,users(username), AuthorBook(author,id)"
+    )
+    .eq("isbn", isbn)
+    .single();
+  return data;
+};
+
+const getUsersBooks = async () => {
+  const user = useAppSelector((state) => state.userData.user);
+
+  const { data, error } = await supabase
+    .from("books")
+    .select(
+      "isbn, created_at,title,type,cover_url,users(username), AuthorBook(author,id)"
+    )
+    .eq("publisher_id", user?.id)
+    .order("created_at", { ascending: false });
+
+  return data;
+};
+
 const BookService = {
   addBook,
   getBooksByPublisher,
   deleteBook,
   editBook,
   getBookByISBN,
+  getBooks,
+  getUsersBooks,
 };
 
 export default BookService;

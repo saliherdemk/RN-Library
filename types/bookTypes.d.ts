@@ -4,7 +4,7 @@ export interface BookType {
   isbn: string;
   title: string;
   type: string;
-  users: { username: string };
+  users: { username: string } | { username: string }[];
   created_at: string;
 }
 

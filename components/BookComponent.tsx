@@ -1,43 +1,11 @@
-import { View, Text, Image, TouchableOpacity, Alert } from "react-native";
 import React from "react";
+import { Image, Text, View } from "react-native";
 import { formatDate } from "../helper/formatDate";
-import { Button } from "react-native-elements";
-import BookService from "../services/bookService";
-import { BookType, AuthBook } from "../types/bookTypes";
-import { useAppDispatch } from "../redux/hooks";
-import { removeBookFromUserBooks } from "../redux/slicers/userSlicer";
-import { useRouter } from "expo-router";
+import { AuthBook, BookType } from "../types/bookTypes";
 
 const BookComponent = ({ book }: { book: BookType }) => {
-  const dispatch = useAppDispatch();
-  const router = useRouter();
-  const handleDeletion = () => {
-    Alert.alert("Delete Book", "You can not undo this action", [
-      {
-        text: "Cancel",
-        onPress: () => {
-          return;
-        },
-        style: "cancel",
-      },
-      {
-        text: "OK",
-        onPress: async () => {
-          const err = await BookService.deleteBook(book.isbn);
-          !err && dispatch(removeBookFromUserBooks(book.isbn));
-        },
-      },
-    ]);
-  };
-
-  const handleEdit = () => {
-    router.push({
-      pathname: "dashboard/editBook/[isbn]",
-      params: { isbn: book.isbn },
-    });
-  };
   return (
-    <View className="w-full mb-4 flex items-center bg-white shadow rounded ">
+    <View className="w-full mt-4 flex items-center bg-white shadow rounded-lg ">
       <View className="w-28 h-28 rounded-full overflow-hidden mt-2 ">
         <Image
           source={require("../assets/cover_placeholder.png")}
@@ -68,24 +36,6 @@ const BookComponent = ({ book }: { book: BookType }) => {
       <Text className="self-end text-gray-600 m-2">
         published by {book.users.username}
       </Text>
-      <View className="flex flex-row w-full justify-center ">
-        <TouchableOpacity
-          onPress={handleDeletion}
-          className="flex-1 bg-rose-500 rounded-bl py-2"
-        >
-          <Text className="text-center text-white font-semibold text-base">
-            Delete
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={handleEdit}
-          className="flex-1 bg-blue-500 rounded-br py-2"
-        >
-          <Text className="text-center text-white font-semibold text-base">
-            Edit
-          </Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 };

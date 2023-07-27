@@ -13,10 +13,8 @@ import { TextInput } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import BookService from "../../../services/bookService";
-import {
-  addBookToUserBooks,
-  setUserBooks,
-} from "../../../redux/slicers/userSlicer";
+import {} from "../../../redux/slicers/userSlicer";
+import { addBookToBooks } from "../../../redux/slicers/bookSlicer";
 
 const AddBook = () => {
   const [title, setTitle] = useState("asd");
@@ -72,8 +70,8 @@ const AddBook = () => {
       setIsBtnLoading(false);
       return;
     }
-    // @ts-expect-error
-    dispatch(addBookToUserBooks(response.data)); // supabase return object but it seems as an array. couldn't figure it out what is happening here.
+
+    dispatch(addBookToBooks(response.data));
 
     Alert.alert(
       "Completed!",

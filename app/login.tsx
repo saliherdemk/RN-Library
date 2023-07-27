@@ -10,15 +10,12 @@ import {
 } from "react-native";
 import Logo from "../components/Logo";
 import { useAppDispatch } from "../redux/hooks";
-import {
-  setUser,
-  setUserBooks,
-  setUserImageUrl,
-} from "../redux/slicers/userSlicer";
+import { setUser, setUserImageUrl } from "../redux/slicers/userSlicer";
 import { supabase } from "../services/supabase";
 import { isEmailValid } from "../helper/validateEmail";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BookService from "../services/bookService";
+import { setBooks } from "../redux/slicers/bookSlicer";
 
 const Login = () => {
   const [email, setEmail] = useState("saliherdem_kaymak@hotmail.com");
@@ -73,10 +70,8 @@ const Login = () => {
     }
     if (data.user) {
       dispatch(setUser(data.user));
-      dispatch(
-        // @ts-expect-error
-        setUserBooks(await BookService.getBooksByPublisher(data.user.id))
-      );
+
+      dispatch(setBooks(await BookService.getBooks()));
       await downloadImage(data.user.id);
 
       router.replace("/");
