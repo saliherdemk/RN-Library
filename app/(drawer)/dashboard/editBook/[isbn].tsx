@@ -1,20 +1,20 @@
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  ActivityIndicator,
-} from "react-native";
-import React, { useEffect, useState } from "react";
-import { useSearchParams } from "expo-router/src/LocationProvider";
-import { SafeAreaView } from "react-native-safe-area-context";
-import BookService from "../../../../services/bookService";
-import { TextInput } from "react-native-gesture-handler";
 import { Stack, useRouter } from "expo-router";
+import { useSearchParams } from "expo-router/src/LocationProvider";
+import React, { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { TextInput } from "react-native-gesture-handler";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
-import { editBookFromUserBooks } from "../../../../redux/slicers/userSlicer";
 import { editBookFromBooks } from "../../../../redux/slicers/bookSlicer";
 import { setTypeFilter } from "../../../../redux/slicers/filterSlicer";
+import { editBookFromUserBooks } from "../../../../redux/slicers/userSlicer";
+import BookService from "../../../../services/bookService";
 import FilterService from "../../../../services/filterService";
 
 const EditBook = () => {
@@ -43,7 +43,6 @@ const EditBook = () => {
       dispatch(editBookFromUserBooks(Obj.data));
       dispatch(editBookFromBooks(Obj.data));
     }
-
     if (Obj.typeNeedsUpdate) {
       dispatch(setTypeFilter(await FilterService.getAllTypeFilters()));
     }
@@ -56,13 +55,12 @@ const EditBook = () => {
 
   const fetchBook = async (isbn: string) => {
     const book = await BookService.getBookByISBN(isbn);
-    setTitle(book?.title);
-    setType(book?.type);
-    let authors: Array<string> = [];
-    book?.AuthorBook.map((b) => {
-      authors.push(b.author);
-    });
-    setAuthors(authors.join("-").toString());
+    if (book) {
+      setTitle(book?.title);
+      setType(book?.type);
+
+      setAuthors(book?.authors.join("-"));
+    }
   };
 
   useEffect(() => {

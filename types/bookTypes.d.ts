@@ -1,12 +1,26 @@
 export interface BookType {
-  AuthorBook: Array<AuthBook>;
+  authors: Array<string>;
   cover_url: string;
   isbn: string;
   title: string;
-  type: TypesType;
-  users: { username: string } | { username: string }[];
+  type: string;
+  publisher: string;
   created_at: string;
 }
+export interface ReturnBookType {
+  isbn: any;
+  created_at: any;
+  title: any;
+  type: any;
+  cover_url: any;
+  users: {
+    username: any;
+  }[];
+  AuthorBook: {
+    author: any;
+  }[];
+}
+[] | null;
 
 export interface TypesType {
   name: string;
@@ -14,11 +28,6 @@ export interface TypesType {
 
 export interface AuthorsType {
   name: string;
-}
-
-export interface AuthBook {
-  author: string;
-  id: number;
 }
 
 export interface authBookData {

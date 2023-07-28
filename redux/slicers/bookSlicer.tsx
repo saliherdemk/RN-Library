@@ -20,13 +20,14 @@ const bookSlice = createSlice({
     },
     editBookFromBooks: (state, action) => {
       const updatedBook = action.payload;
+      console.log(updatedBook);
       state.books = state.books.map((book) =>
         book.isbn === updatedBook.isbn
           ? {
               ...updatedBook,
               created_at: book.created_at,
               isbn: book.isbn,
-              users: book.users,
+              publisher: book.publisher,
             }
           : book
       );

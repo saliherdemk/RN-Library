@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FlatList, Text } from "react-native";
+import { Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BookComponent from "../../../components/BookComponent";
 import { useAppSelector } from "../../../redux/hooks";

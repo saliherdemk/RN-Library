@@ -43,7 +43,7 @@ export const userSlice = createSlice({
               ...updatedBook,
               created_at: book.created_at,
               isbn: book.isbn,
-              users: book.users,
+              publisher: book.publisher,
             }
           : book
       );
