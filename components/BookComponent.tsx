@@ -20,7 +20,7 @@ const BookComponent = ({ book }: { book: BookType }) => {
       </View>
       <View className="text-center  flex items-center w-full">
         <Text className="font-semibold text-lg">{book.title}</Text>
-        <Text className="italic text-gray-500">{book.type}</Text>
+        <Text className="italic text-gray-500">{book.type.name}</Text>
         <View className="flex flex-row">
           <Text className="text-gray-600">by </Text>
           <View>

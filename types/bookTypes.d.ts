@@ -3,9 +3,17 @@ export interface BookType {
   cover_url: string;
   isbn: string;
   title: string;
-  type: string;
+  type: TypesType;
   users: { username: string } | { username: string }[];
   created_at: string;
+}
+
+export interface TypesType {
+  name: string;
+}
+
+export interface AuthorsType {
+  name: string;
 }
 
 export interface AuthBook {

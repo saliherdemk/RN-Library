@@ -14,6 +14,8 @@ import { Stack, useRouter } from "expo-router";
 import { useDispatch } from "react-redux";
 import { editBookFromUserBooks } from "../../../../redux/slicers/userSlicer";
 import { editBookFromBooks } from "../../../../redux/slicers/bookSlicer";
+import { setTypeFilter } from "../../../../redux/slicers/filterSlicer";
+import FilterService from "../../../../services/filterService";
 
 const EditBook = () => {
   const { isbn } = useSearchParams();
@@ -40,6 +42,14 @@ const EditBook = () => {
     if (Obj.data) {
       dispatch(editBookFromUserBooks(Obj.data));
       dispatch(editBookFromBooks(Obj.data));
+    }
+
+    if (Obj.typeNeedsUpdate) {
+      dispatch(setTypeFilter(await FilterService.getAllTypeFilters()));
+    }
+
+    if (Obj.authorNeedsUpdate) {
+      dispatch(setTypeFilter(await FilterService.getAllAuthorFilters()));
     }
     router.back();
   };

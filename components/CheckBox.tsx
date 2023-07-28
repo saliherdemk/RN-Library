@@ -5,7 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 function Checkbox({ title }: { title: string }) {
   const [checked, setChecked] = useState(false);
   return (
-    <View className="flex flex-row justify-center items-center m-3">
+    <View className="flex flex-row justify-center items-center mx-3 my-2">
       <Text>{title}</Text>
       <Pressable
         className={`w-6 h-6 justify-center items-center border-2 ${

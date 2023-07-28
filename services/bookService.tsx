@@ -6,15 +6,34 @@ const getAuthor = async (name: string) => {
   const { data, error: authErr } = await supabase
     .from("authors")
     .select("name")
-    .eq("name", name);
-  if (data?.length) return name;
+    .eq("name", name)
+    .single();
+  if (data?.name) return { data: data.name, needUpdate: false };
 
   const { data: authorData, error } = await supabase
     .from("authors")
     .insert({ name })
     .select("name")
     .single();
-  if (authorData) return authorData.name;
+
+  if (authorData) return { data: authorData.name, needUpdate: true };
+};
+
+const getType = async (name: string) => {
+  const { data, error: authErtypeErr } = await supabase
+    .from("types")
+    .select("name")
+    .eq("name", name)
+    .single();
+
+  if (data?.name) return { name: data.name, needUpdate: false };
+  const { data: typeData, error } = await supabase
+    .from("types")
+    .insert({ name })
+    .select("name")
+    .single();
+
+  if (typeData) return { name: typeData.name, needUpdate: true };
 };
 
 const addBook = async (
@@ -25,10 +44,11 @@ const addBook = async (
   cover_url: string,
   authors: string
 ) => {
+  const typeData = await getType(type);
   const { data: bookData, error: bookErr } = await supabase
     .from("books")
-    .insert({ isbn, publisher_id, type, title, cover_url: "" })
-    .select("isbn,type,title,cover_url,created_at,publisher_id(username)")
+    .insert({ isbn, publisher_id, type: typeData?.name, title, cover_url: "" })
+    .select("isbn,type(name),title,cover_url,created_at,publisher_id(username)")
     .single();
   if (bookErr?.code == "23505") {
     return { err: "This book already exists", data: null };
@@ -38,13 +58,14 @@ const addBook = async (
   var hasErr = false;
 
   let authorArr = [];
+  let authorNeedsUpdate = false;
   for (let i = 0; i < authorArray.length; i++) {
-    const author = await getAuthor(authorArray[i]);
-
+    const authorData = await getAuthor(authorArray[i]);
+    authorNeedsUpdate = authorNeedsUpdate && (authorData?.needUpdate ?? false);
     if (bookData) {
       const { data: authBookData, error: authBookErr } = await supabase
         .from("AuthorBook")
-        .insert({ author, book: bookData.isbn })
+        .insert({ authorData: authorData?.data, book: bookData.isbn })
         .select("author,id")
         .single();
 
@@ -59,20 +80,24 @@ const addBook = async (
   if (hasErr) {
     return { err: "Something went wrong during the insertion", data: null };
   }
-
-  let bookObj = {
+  let bookObj: BookType = {
     AuthorBook: [] as { author: any; id: any }[],
     cover_url: bookData?.cover_url,
     created_at: bookData?.created_at,
     isbn: bookData?.isbn,
     title: bookData?.title,
-    type: bookData?.type,
-    users: bookData?.publisher_id,
+    type: typeData?.name,
+    users: bookData?.publisher_id ?? [],
   };
 
   bookObj.AuthorBook = authorArr;
 
-  return { err: null, data: bookObj };
+  return {
+    err: null,
+    data: bookObj,
+    authorNeedsUpdate,
+    typeNeedsUpdate: typeData?.needUpdate,
+  };
 };
 
 const deleteBook = async (isbn: string) => {
@@ -87,9 +112,10 @@ const editBook = async (
   cover_url: string,
   authors: string
 ) => {
+  const typeData = await getType(type);
   const { error } = await supabase
     .from("books")
-    .update({ type, title, cover_url })
+    .update({ type: typeData?.name, title, cover_url })
     .eq("isbn", isbn);
 
   if (error) return { err: error.message, data: null };
@@ -105,7 +131,6 @@ const editBook = async (
   if (delErr) return { err: "Something went wrong", data: null };
   let hasError = false;
   data?.map(async (el) => {
-    console.log(el.id);
     const { error: delErr } = await supabase
       .from("AuthorBook")
       .delete()
@@ -117,14 +142,15 @@ const editBook = async (
 
   var authorArray = authors.split("-");
   var hasErr = false;
-
   let authorArr = [];
+  let authorNeedsUpdate = false;
   for (let i = 0; i < authorArray.length; i++) {
-    const author = await getAuthor(authorArray[i]);
+    const authorData = await getAuthor(authorArray[i]);
+    authorNeedsUpdate = authorNeedsUpdate && (authorData?.needUpdate ?? false);
 
     const { data: authBookData, error: authBookErr } = await supabase
       .from("AuthorBook")
-      .insert({ author, book: isbn })
+      .insert({ authorData: authorData?.data, book: isbn })
       .select("author,id")
       .single();
 
@@ -140,14 +166,19 @@ const editBook = async (
     isbn,
     cover_url: cover_url,
     title: title,
-    type: type,
+    type: typeData?.name,
     created_at: "",
     users: { username: "" },
   };
 
   bookObj.AuthorBook = authorArr;
 
-  return { err: null, data: bookObj };
+  return {
+    err: null,
+    data: bookObj,
+    authorNeedsUpdate,
+    typeNeedsUpdate: typeData?.needUpdate,
+  };
 };
 
 const getBooks = async () => {

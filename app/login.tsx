@@ -20,6 +20,8 @@ import { isEmailValid } from "../helper/validateEmail";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BookService from "../services/bookService";
 import { setBooks } from "../redux/slicers/bookSlicer";
+import { setAuthorsFilter, setTypeFilter } from "../redux/slicers/filterSlicer";
+import FilterService from "../services/filterService";
 
 const Login = () => {
   const [email, setEmail] = useState("saliherdem_kaymak@hotmail.com");
@@ -77,6 +79,8 @@ const Login = () => {
 
       dispatch(setBooks(await BookService.getBooks()));
       dispatch(setUserBooks(await BookService.getUsersBooks(data.user.id)));
+      dispatch(setTypeFilter(await FilterService.getAllTypeFilters()));
+      dispatch(setAuthorsFilter(await FilterService.getAllAuthorFilters()));
 
       await downloadImage(data.user.id);
 

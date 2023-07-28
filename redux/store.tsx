@@ -2,11 +2,13 @@ import { configureStore } from "@reduxjs/toolkit";
 
 import userReducer from "./slicers/userSlicer";
 import bookReducer from "./slicers/bookSlicer";
+import filterSlicer from "./slicers/filterSlicer";
 
 export const store = configureStore({
   reducer: {
     userData: userReducer,
     bookData: bookReducer,
+    filtersData: filterSlicer,
   },
 });
 
