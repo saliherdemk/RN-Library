@@ -12,7 +12,7 @@ import { TextInput } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 import { editBookFromBooks } from "../../../../redux/slicers/bookSlicer";
-import { setTypeFilter } from "../../../../redux/slicers/filterSlicer";
+import { setTypesFilter } from "../../../../redux/slicers/filterSlicer";
 import { editBookFromUserBooks } from "../../../../redux/slicers/userSlicer";
 import BookService from "../../../../services/bookService";
 import FilterService from "../../../../services/filterService";
@@ -44,11 +44,11 @@ const EditBook = () => {
       dispatch(editBookFromBooks(Obj.data));
     }
     if (Obj.typeNeedsUpdate) {
-      dispatch(setTypeFilter(await FilterService.getAllTypeFilters()));
+      dispatch(setTypesFilter(await FilterService.getAllTypeFilters()));
     }
 
     if (Obj.authorNeedsUpdate) {
-      dispatch(setTypeFilter(await FilterService.getAllAuthorFilters()));
+      dispatch(setTypesFilter(await FilterService.getAllAuthorFilters()));
     }
     router.back();
   };

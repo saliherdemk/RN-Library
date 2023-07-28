@@ -1,7 +1,6 @@
-import { View, Text } from "react-native";
-import React from "react";
 import { useSearchParams } from "expo-router/src/LocationProvider";
-import { StatusBar } from "expo-status-bar";
+import React from "react";
+import { Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const BookDetails = () => {

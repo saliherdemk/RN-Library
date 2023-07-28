@@ -8,12 +8,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Logo from "../components/Logo";
 import { isEmailValid } from "../helper/validateEmail";
 import { useAppDispatch } from "../redux/hooks";
 import { setUser } from "../redux/slicers/userSlicer";
 import { supabase } from "../services/supabase";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 const Register = () => {
   const [username, setUsername] = useState("");

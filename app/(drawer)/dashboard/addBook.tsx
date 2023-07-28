@@ -12,9 +12,14 @@ import {
 import { TextInput } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { addBookToBooks } from "../../../redux/slicers/bookSlicer";
+import {
+  setAuthorsFilter,
+  setTypesFilter,
+} from "../../../redux/slicers/filterSlicer";
 import { addBookToUserBooks } from "../../../redux/slicers/userSlicer";
 import BookService from "../../../services/bookService";
-import { addBookToBooks } from "../../../redux/slicers/bookSlicer";
+import FilterService from "../../../services/filterService";
 
 const AddBook = () => {
   const [title, setTitle] = useState("asd");
@@ -73,6 +78,14 @@ const AddBook = () => {
 
     dispatch(addBookToUserBooks(response.data));
     dispatch(addBookToBooks(response.data));
+
+    if (response.typeNeedsUpdate) {
+      dispatch(setTypesFilter(await FilterService.getAllTypeFilters()));
+    }
+
+    if (response.authorNeedsUpdate) {
+      dispatch(setAuthorsFilter(await FilterService.getAllAuthorFilters()));
+    }
 
     Alert.alert(
       "Completed!",

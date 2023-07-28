@@ -14,7 +14,7 @@ const filterSlice = createSlice({
   name: "filters",
   initialState,
   reducers: {
-    setTypeFilter: (state, action) => {
+    setTypesFilter: (state, action) => {
       state.types = action.payload;
     },
 
@@ -24,6 +24,6 @@ const filterSlice = createSlice({
   },
 });
 
-export const { setTypeFilter, setAuthorsFilter } = filterSlice.actions;
+export const { setTypesFilter, setAuthorsFilter } = filterSlice.actions;
 
 export default filterSlice.reducer;
