@@ -14,8 +14,14 @@ function Checkbox({
   const [checked, setChecked] = useState(initialValue);
 
   useEffect(() => {
+    setChecked(initialValue);
+  }, [initialValue]);
+
+  useEffect(() => {
     if (checked) {
-      setValues((values) => [...values, title]);
+      setValues((values) =>
+        values.includes(title) ? values : [...values, title]
+      );
       return;
     }
     setValues((values) => values.filter((a) => a != title));
@@ -28,7 +34,7 @@ function Checkbox({
         className={`ml-1 w-6 h-6 justify-center items-center border-2 ${
           checked ? "bg-sky-300" : "bg-white"
         } rounded`}
-        onPress={() => setChecked(!checked)}
+        onPress={() => setChecked((curr) => !curr)}
       >
         {checked && <Ionicons name="checkmark" size={16} color="white" />}
       </Pressable>

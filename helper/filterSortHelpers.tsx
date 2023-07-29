@@ -6,30 +6,28 @@ export function sortBooks(
   key: string | null,
   order: "asc" | "desc" | null
 ) {
-  if (!key) {
-    return books;
-  }
   let sortedBooks = [...books];
 
-  switch (key) {
-    case "title":
-      sortedBooks.sort((a, b) => a.title.localeCompare(b.title));
-      break;
-    case "publisher":
-      sortedBooks.sort((a, b) => a.publisher.localeCompare(b.publisher));
-      break;
-    case "isbn":
-      sortedBooks.sort((a, b) => a.isbn.localeCompare(b.isbn));
-      break;
-    case "created_at":
-      sortedBooks.sort((a, b) => {
-        const dateA = new Date(a.created_at);
-        const dateB = new Date(b.created_at);
-        return dateA.getTime() - dateB.getTime();
-      });
-      break;
-    default:
-      break;
+  if (!key || key === "created_at") {
+    sortedBooks.sort((a, b) => {
+      const dateA = new Date(a.created_at);
+      const dateB = new Date(b.created_at);
+      return dateA.getTime() - dateB.getTime();
+    });
+  } else {
+    switch (key) {
+      case "title":
+        sortedBooks.sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case "publisher":
+        sortedBooks.sort((a, b) => a.publisher.localeCompare(b.publisher));
+        break;
+      case "isbn":
+        sortedBooks.sort((a, b) => a.isbn.localeCompare(b.isbn));
+        break;
+      default:
+        break;
+    }
   }
 
   if (order === "desc") {

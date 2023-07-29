@@ -47,12 +47,12 @@ const Dashboard = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 p-4 pb-0">
+    <SafeAreaView className="flex-1 px-4 pb-0">
       <Text className="text-center text-2xl mb-2 border-b-2">Your Books</Text>
-      <ScrollView className=" p-5">
+      <ScrollView className="px-5 flex-1">
         {books &&
           books.map((book: BookType) => (
-            <View key={book.isbn}>
+            <View key={book.isbn} className="pb-2">
               <BookComponent book={book} />
               <View className="flex flex-row w-full justify-center ">
                 <TouchableOpacity

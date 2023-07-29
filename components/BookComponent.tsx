@@ -5,7 +5,7 @@ import { BookType } from "../types/bookTypes";
 
 const BookComponent = ({ book }: { book: BookType }) => {
   return (
-    <View className="w-full mt-4 flex items-center bg-white shadow rounded-lg ">
+    <View className="w-full my-4 flex items-center bg-white shadow rounded-lg ">
       <View className="w-28 h-28 rounded-full overflow-hidden mt-2 ">
         <Image
           source={require("../assets/cover_placeholder.png")}

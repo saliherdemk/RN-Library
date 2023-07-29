@@ -1,6 +1,6 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Pressable,
   ScrollView,
@@ -23,10 +23,12 @@ function FilterExpandable({
   setAppliedFilter,
   setSortBy,
   setSortOrder,
+  removeFilter,
 }: {
   setAppliedFilter: React.Dispatch<React.SetStateAction<AppliedFilterType>>;
   setSortBy: React.Dispatch<React.SetStateAction<keyof BookType | null>>;
   setSortOrder: React.Dispatch<React.SetStateAction<"asc" | "desc" | null>>;
+  removeFilter: string;
 }) {
   const typesArray = useAppSelector((state) => state.filtersData.types);
   const authorsArray = useAppSelector((state) => state.filtersData.authors);
@@ -45,6 +47,39 @@ function FilterExpandable({
   const [maxHeight, setMaxHeight] = useState(30);
 
   const [isFilterShown, setIsFilterShown] = useState(true);
+
+  const [removeFilterReady, setRemoveFilterReady] = useState(false);
+
+  useEffect(() => {
+    let splitted = removeFilter.split(":");
+    const filterType = splitted[0];
+
+    switch (filterType) {
+      case "title":
+        setTitle("");
+        break;
+      case "isbn":
+        setIsbn("");
+        break;
+      case "publisher":
+        setPublisher("");
+        break;
+      case "authors":
+        setAuthors((curr) => curr.filter((v) => v !== splitted[1]));
+        break;
+      case "types":
+        setTypes((curr) => curr.filter((v) => v !== splitted[1]));
+        break;
+      default:
+        break;
+    }
+
+    setRemoveFilterReady((curr) => !curr);
+  }, [removeFilter]);
+
+  useEffect(() => {
+    applyFilter();
+  }, [removeFilterReady]);
 
   const applyFilter = () => {
     setAppliedFilter({
@@ -73,7 +108,7 @@ function FilterExpandable({
   });
 
   return (
-    <Animated.View style={style} className="overflow-hidden max-h px-4">
+    <Animated.View style={style} className="overflow-hidden max-h">
       <View className="h-8 flex justify-between items-end ">
         <TouchableOpacity
           onPress={() => {
@@ -218,9 +253,7 @@ function FilterExpandable({
 
               <Picker
                 selectedValue={sortOrderValue}
-                onValueChange={(itemValue, itemIndex) =>
-                  setSortOrderValue(itemValue)
-                }
+                onValueChange={(itemValue, _) => setSortOrderValue(itemValue)}
               >
                 <Picker.Item label="Ascending" value="asc" />
                 <Picker.Item label="Descending" value="desc" />
