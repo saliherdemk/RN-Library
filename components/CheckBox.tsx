@@ -5,11 +5,13 @@ import { Pressable, Text, View } from "react-native";
 function Checkbox({
   title,
   setValues,
+  initialValue,
 }: {
   title: string;
   setValues: React.Dispatch<React.SetStateAction<Array<string>>>;
+  initialValue: boolean;
 }) {
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = useState(initialValue);
 
   useEffect(() => {
     if (checked) {
