@@ -9,7 +9,10 @@ import { ScrollView } from "react-native-gesture-handler";
 import { useDispatch } from "react-redux";
 import FilterExpandable from "../../../components/FilterExpandable";
 import { filterBooks, sortBooks } from "../../../helper/filterSortHelpers";
-import { resetAppliedFilter } from "../../../redux/slicers/filterSlicer";
+import {
+  resetAppliedFilter,
+  setAppliedFilter,
+} from "../../../redux/slicers/filterSlicer";
 
 const Books = () => {
   const books = useAppSelector((state) => state.bookData.books);
@@ -24,9 +27,12 @@ const Books = () => {
 
   const [activeSort, setActiveSort] = useState("");
   const [activeFilters, setActiveFilters] = useState<Array<string>>([]);
-  const [removeFilter, setRemoveFilter] = useState("");
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    console.log("inait");
+  }, []);
 
   useEffect(() => {
     setShownBooks(sortBooks(shownBooks, appliedSorts));
@@ -61,11 +67,31 @@ const Books = () => {
     setActiveSort("");
   }, []);
 
+  const removeFilter = (value: string) => {
+    let splitted = value.split(":");
+    const filterType = splitted[0];
+    if (filterType == "types" || filterType == "authors") {
+      dispatch(
+        setAppliedFilter({
+          ...appliedFilter,
+          [splitted[0]]: appliedFilter[filterType].filter(
+            (el) => el != splitted[1]
+          ),
+        })
+      );
+      return;
+    }
+
+    dispatch(
+      setAppliedFilter({ ...appliedFilter, [splitted[0]]: splitted[1] })
+    );
+  };
+
   return (
     <SafeAreaView className="flex-1 px-4 pb-0">
       <Text className="text-center text-2xl mb-2 border-b-2">Books</Text>
       <View className="px-5 flex-1">
-        <FilterExpandable removeFilter={removeFilter} />
+        <FilterExpandable />
         <View className="flex flex-row flex-wrap gap-2 mt-1">
           {activeSort && (
             <TouchableOpacity
@@ -81,7 +107,7 @@ const Books = () => {
             activeFilters.map((el) => (
               <TouchableOpacity
                 onPress={() => {
-                  setRemoveFilter(el);
+                  removeFilter(el);
                 }}
                 key={el}
                 className="p-2 bg-white rounded flex-row items-end shadow-lg"

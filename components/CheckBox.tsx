@@ -1,8 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { Pressable, Text, View } from "react-native";
+import { memo } from "react";
 
-function Checkbox({
+export default memo(function Checkbox({
   title,
   setValues,
   initialValue,
@@ -40,6 +41,4 @@ function Checkbox({
       </Pressable>
     </View>
   );
-}
-
-export default Checkbox;
+});

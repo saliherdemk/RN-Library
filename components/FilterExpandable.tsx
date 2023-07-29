@@ -1,6 +1,6 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import {
   Pressable,
   ScrollView,
@@ -23,79 +23,68 @@ import {
 import { BookType } from "../types/bookTypes";
 import Checkbox from "./CheckBox";
 
-function FilterExpandable({ removeFilter }: { removeFilter: string }) {
+export default memo(function FilterExpandable() {
   const typesArray = useAppSelector((state) => state.filtersData.types);
   const authorsArray = useAppSelector((state) => state.filtersData.authors);
+  const appliedFilter = useAppSelector(
+    (state) => state.filtersData.appliedFilters
+  );
+
   const [selectedSort, setSelectedSort] = useState({
     sortBy: "created_at" as keyof BookType,
     sortOrder: "asc",
   });
 
   const [selectedFilters, setSelectedFilters] = useState({
-    title: "",
-    isbn: "",
-    publisher: "",
+    title: appliedFilter.title,
+    isbn: appliedFilter.isbn,
+    publisher: appliedFilter.publisher,
   });
 
-  const [types, setTypes] = useState<Array<string>>([]);
-  const [authors, setAuthors] = useState<Array<string>>([]);
+  const [selectedTypes, setSelectedTypes] = useState<Array<string>>(
+    appliedFilter.types
+  );
+  const [selectedAuthors, setSelectedAuthors] = useState<Array<string>>(
+    appliedFilter.authors
+  );
   const [collapsed, setCollapsed] = useState(true);
 
   const [maxHeight, setMaxHeight] = useState(30);
 
   const [isFilterShown, setIsFilterShown] = useState(true);
 
-  const [removeFilterReady, setRemoveFilterReady] = useState(false);
-
   const dispatch = useDispatch();
 
   useEffect(() => {
-    let splitted = removeFilter.split(":");
-    const filterType = splitted[0];
-
-    switch (filterType) {
-      case "title":
-        // setTitle("");
-        break;
-      case "isbn":
-        // setIsbn("");
-        break;
-      case "publisher":
-        // setPublisher("");
-        break;
-      case "authors":
-        setAuthors((curr) => curr.filter((v) => v !== splitted[1]));
-        break;
-      case "types":
-        setTypes((curr) => curr.filter((v) => v !== splitted[1]));
-        break;
-      default:
-        break;
-    }
-
-    setRemoveFilterReady((curr) => !curr);
-  }, [removeFilter]);
-
-  useEffect(() => {
-    applyFilter();
-  }, [removeFilterReady]);
+    setSelectedFilters({
+      title: appliedFilter.title,
+      isbn: appliedFilter.isbn,
+      publisher: appliedFilter.publisher,
+    });
+    setSelectedTypes(appliedFilter.types);
+    setSelectedAuthors(appliedFilter.authors);
+  }, [appliedFilter]);
 
   const applyFilter = () => {
-    dispatch(setAppliedFilter({ ...selectedFilters, authors, types }));
+    dispatch(
+      setAppliedFilter({
+        ...selectedFilters,
+        authors: selectedAuthors,
+        types: selectedTypes,
+      })
+    );
   };
 
   const applySort = () => {
     dispatch(setAppliedSorts(selectedSort));
   };
 
-  const config = {
-    duration: 300,
-    easing: Easing.ease,
-  };
-
   const style = useAnimatedStyle(() => {
     return {
-      maxHeight: withTiming(maxHeight, config),
+      maxHeight: withTiming(maxHeight, {
+        duration: 300,
+        easing: Easing.ease,
+      }),
     };
   });
 
@@ -195,8 +184,8 @@ function FilterExpandable({ removeFilter }: { removeFilter: string }) {
                       <Checkbox
                         title={typeEl.name}
                         key={typeEl.name}
-                        setValues={setTypes}
-                        initialValue={types.includes(typeEl.name)}
+                        setValues={setSelectedTypes}
+                        initialValue={selectedTypes.includes(typeEl.name)}
                       />
                     ))}
                   </View>
@@ -213,8 +202,8 @@ function FilterExpandable({ removeFilter }: { removeFilter: string }) {
                       <Checkbox
                         title={authorEl.name}
                         key={authorEl.name}
-                        setValues={setAuthors}
-                        initialValue={authors.includes(authorEl.name)}
+                        setValues={setSelectedAuthors}
+                        initialValue={selectedAuthors.includes(authorEl.name)}
                       />
                     ))}
                   </View>
@@ -278,6 +267,4 @@ function FilterExpandable({ removeFilter }: { removeFilter: string }) {
       </View>
     </Animated.View>
   );
-}
-
-export default FilterExpandable;
+});
