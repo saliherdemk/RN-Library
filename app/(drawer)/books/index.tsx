@@ -1,16 +1,14 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BookComponent from "../../../components/BookComponent";
 import { useAppSelector } from "../../../redux/hooks";
 
+import { AntDesign } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
+import { useDispatch } from "react-redux";
 import FilterExpandable from "../../../components/FilterExpandable";
 import { filterBooks, sortBooks } from "../../../helper/filterSortHelpers";
-import { BookType } from "../../../types/bookTypes";
-import { AppliedFilterType } from "../../../types/filters";
-import { AntDesign } from "@expo/vector-icons";
-import { useDispatch } from "react-redux";
 import { resetAppliedFilter } from "../../../redux/slicers/filterSlicer";
 
 const Books = () => {

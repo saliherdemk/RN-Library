@@ -14,27 +14,29 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
-import { useAppSelector } from "../redux/hooks";
-import { BookType } from "../types/bookTypes";
-import { AppliedFilterType } from "../types/filters";
-import Checkbox from "./CheckBox";
 import { useDispatch } from "react-redux";
+import { useAppSelector } from "../redux/hooks";
 import {
   setAppliedFilter,
   setAppliedSorts,
 } from "../redux/slicers/filterSlicer";
+import { BookType } from "../types/bookTypes";
+import Checkbox from "./CheckBox";
 
 function FilterExpandable({ removeFilter }: { removeFilter: string }) {
   const typesArray = useAppSelector((state) => state.filtersData.types);
   const authorsArray = useAppSelector((state) => state.filtersData.authors);
-  const [sortByValue, setSortByValue] = useState(
-    "created_at" as keyof BookType
-  );
-  const [sortOrderValue, setSortOrderValue] = useState<"asc" | "desc">("asc");
+  const [selectedSort, setSelectedSort] = useState({
+    sortBy: "created_at" as keyof BookType,
+    sortOrder: "asc",
+  });
 
-  const [title, setTitle] = useState("");
-  const [isbn, setIsbn] = useState("");
-  const [publisher, setPublisher] = useState("");
+  const [selectedFilters, setSelectedFilters] = useState({
+    title: "",
+    isbn: "",
+    publisher: "",
+  });
+
   const [types, setTypes] = useState<Array<string>>([]);
   const [authors, setAuthors] = useState<Array<string>>([]);
   const [collapsed, setCollapsed] = useState(true);
@@ -53,13 +55,13 @@ function FilterExpandable({ removeFilter }: { removeFilter: string }) {
 
     switch (filterType) {
       case "title":
-        setTitle("");
+        // setTitle("");
         break;
       case "isbn":
-        setIsbn("");
+        // setIsbn("");
         break;
       case "publisher":
-        setPublisher("");
+        // setPublisher("");
         break;
       case "authors":
         setAuthors((curr) => curr.filter((v) => v !== splitted[1]));
@@ -79,21 +81,11 @@ function FilterExpandable({ removeFilter }: { removeFilter: string }) {
   }, [removeFilterReady]);
 
   const applyFilter = () => {
-    dispatch(
-      setAppliedFilter({
-        title,
-        isbn,
-        publisher,
-        types,
-        authors,
-      })
-    );
+    dispatch(setAppliedFilter({ ...selectedFilters, authors, types }));
   };
 
   const applySort = () => {
-    dispatch(
-      setAppliedSorts({ sortBy: sortByValue, sortOrder: sortOrderValue })
-    );
+    dispatch(setAppliedSorts(selectedSort));
   };
 
   const config = {
@@ -170,22 +162,28 @@ function FilterExpandable({ removeFilter }: { removeFilter: string }) {
                 className="w-full bg-white h-12 p-2.5 text-black mt-2.5 border border-gray-200 rounded focus:border-sky-300"
                 placeholderTextColor="#808080"
                 placeholder="title"
-                value={title}
-                onChangeText={(text) => setTitle(text)}
+                value={selectedFilters.title}
+                onChangeText={(text) =>
+                  setSelectedFilters((curr) => ({ ...curr, title: text }))
+                }
               />
               <TextInput
                 className="w-full bg-white h-12 p-2.5 text-black mt-2.5 border border-gray-200 rounded focus:border-sky-300"
                 placeholderTextColor="#808080"
                 placeholder="ISBN"
-                value={isbn}
-                onChangeText={(text) => setIsbn(text)}
+                value={selectedFilters.isbn}
+                onChangeText={(text) =>
+                  setSelectedFilters((curr) => ({ ...curr, isbn: text }))
+                }
               />
               <TextInput
                 className="w-full bg-white h-12 p-2.5 text-black mt-2.5 border border-gray-200 rounded focus:border-sky-300"
                 placeholderTextColor="#808080"
                 placeholder="publisher"
-                value={publisher}
-                onChangeText={(text) => setPublisher(text)}
+                value={selectedFilters.publisher}
+                onChangeText={(text) =>
+                  setSelectedFilters((curr) => ({ ...curr, publisher: text }))
+                }
               />
               <View className="bg-white my-3">
                 <Text className="text-center text-lg border-b-2 border-gray-400">
@@ -237,9 +235,12 @@ function FilterExpandable({ removeFilter }: { removeFilter: string }) {
                 Sort By
               </Text>
               <Picker
-                selectedValue={sortByValue as keyof BookType}
-                onValueChange={(itemValue, itemIndex) =>
-                  setSortByValue(itemValue)
+                selectedValue={selectedSort.sortBy}
+                onValueChange={(itemValue) =>
+                  setSelectedSort((prevState) => ({
+                    ...prevState,
+                    sortBy: itemValue,
+                  }))
                 }
               >
                 <Picker.Item label="Created Date" value="created_at" />
@@ -252,8 +253,13 @@ function FilterExpandable({ removeFilter }: { removeFilter: string }) {
               </Text>
 
               <Picker
-                selectedValue={sortOrderValue}
-                onValueChange={(itemValue, _) => setSortOrderValue(itemValue)}
+                selectedValue={selectedSort.sortOrder}
+                onValueChange={(itemValue) =>
+                  setSelectedSort((prevState) => ({
+                    ...prevState,
+                    sortOrder: itemValue,
+                  }))
+                }
               >
                 <Picker.Item label="Ascending" value="asc" />
                 <Picker.Item label="Descending" value="desc" />
