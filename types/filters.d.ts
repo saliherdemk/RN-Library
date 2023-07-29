@@ -5,3 +5,8 @@ export interface AppliedFilterType {
   types: Array<string>;
   authors: Array<string>;
 }
+
+export interface AppliedSortsType {
+  sortBy: keyof BookType | null;
+  sortOrder: "asc" | "desc" | null;
+}

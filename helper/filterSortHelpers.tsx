@@ -1,13 +1,12 @@
 import { BookType } from "../types/bookTypes";
-import { AppliedFilterType } from "../types/filters";
+import { AppliedFilterType, AppliedSortsType } from "../types/filters";
 
 export function sortBooks(
   books: Array<BookType>,
-  key: string | null,
-  order: "asc" | "desc" | null
+  appliedSorts: AppliedSortsType
 ) {
   let sortedBooks = [...books];
-
+  let key = appliedSorts.sortBy;
   if (!key || key === "created_at") {
     sortedBooks.sort((a, b) => {
       const dateA = new Date(a.created_at);
@@ -30,7 +29,7 @@ export function sortBooks(
     }
   }
 
-  if (order === "desc") {
+  if (appliedSorts.sortOrder === "desc") {
     sortedBooks.reverse();
   }
 

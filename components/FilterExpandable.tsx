@@ -18,18 +18,13 @@ import { useAppSelector } from "../redux/hooks";
 import { BookType } from "../types/bookTypes";
 import { AppliedFilterType } from "../types/filters";
 import Checkbox from "./CheckBox";
-
-function FilterExpandable({
+import { useDispatch } from "react-redux";
+import {
   setAppliedFilter,
-  setSortBy,
-  setSortOrder,
-  removeFilter,
-}: {
-  setAppliedFilter: React.Dispatch<React.SetStateAction<AppliedFilterType>>;
-  setSortBy: React.Dispatch<React.SetStateAction<keyof BookType | null>>;
-  setSortOrder: React.Dispatch<React.SetStateAction<"asc" | "desc" | null>>;
-  removeFilter: string;
-}) {
+  setAppliedSorts,
+} from "../redux/slicers/filterSlicer";
+
+function FilterExpandable({ removeFilter }: { removeFilter: string }) {
   const typesArray = useAppSelector((state) => state.filtersData.types);
   const authorsArray = useAppSelector((state) => state.filtersData.authors);
   const [sortByValue, setSortByValue] = useState(
@@ -49,6 +44,8 @@ function FilterExpandable({
   const [isFilterShown, setIsFilterShown] = useState(true);
 
   const [removeFilterReady, setRemoveFilterReady] = useState(false);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     let splitted = removeFilter.split(":");
@@ -82,18 +79,21 @@ function FilterExpandable({
   }, [removeFilterReady]);
 
   const applyFilter = () => {
-    setAppliedFilter({
-      title,
-      isbn,
-      publisher,
-      types,
-      authors,
-    });
+    dispatch(
+      setAppliedFilter({
+        title,
+        isbn,
+        publisher,
+        types,
+        authors,
+      })
+    );
   };
 
   const applySort = () => {
-    setSortBy(sortByValue);
-    setSortOrder(sortOrderValue);
+    dispatch(
+      setAppliedSorts({ sortBy: sortByValue, sortOrder: sortOrderValue })
+    );
   };
 
   const config = {

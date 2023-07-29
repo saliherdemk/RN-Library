@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BookComponent from "../../../components/BookComponent";
@@ -10,30 +10,35 @@ import { filterBooks, sortBooks } from "../../../helper/filterSortHelpers";
 import { BookType } from "../../../types/bookTypes";
 import { AppliedFilterType } from "../../../types/filters";
 import { AntDesign } from "@expo/vector-icons";
+import { useDispatch } from "react-redux";
+import { resetAppliedFilter } from "../../../redux/slicers/filterSlicer";
 
 const Books = () => {
   const books = useAppSelector((state) => state.bookData.books);
   const [shownBooks, setShownBooks] = useState(books);
-  const [appliedFilter, setAppliedFilter] = useState<AppliedFilterType>({
-    title: "",
-    isbn: "",
-    publisher: "",
-    types: [],
-    authors: [],
-  });
+  const appliedFilter = useAppSelector(
+    (state) => state.filtersData.appliedFilters
+  );
 
-  const [sortBy, setSortBy] = useState<keyof BookType | null>(null);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc" | null>(null);
+  const appliedSorts = useAppSelector(
+    (state) => state.filtersData.appliedSorts
+  );
+
   const [activeSort, setActiveSort] = useState("");
   const [activeFilters, setActiveFilters] = useState<Array<string>>([]);
   const [removeFilter, setRemoveFilter] = useState("");
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    setShownBooks(sortBooks(shownBooks, sortBy, sortOrder));
+    setShownBooks(sortBooks(shownBooks, appliedSorts));
+    let sortBy = appliedSorts.sortBy as string;
+    let sortOrder = appliedSorts.sortOrder as string;
+
     if (sortBy) {
       setActiveSort(sortBy + "(" + sortOrder + ")");
     }
-  }, [sortBy, sortOrder]);
+  }, [appliedSorts]);
 
   useEffect(() => {
     setShownBooks(filterBooks(books, appliedFilter));
@@ -53,21 +58,16 @@ const Books = () => {
     setActiveFilters(newActiveFilters);
   }, [appliedFilter]);
 
-  const removeSort = () => {
-    setSortBy(null);
-    setSortOrder(null);
+  const removeSort = useCallback(() => {
+    dispatch(resetAppliedFilter());
     setActiveSort("");
-  };
+  }, []);
+
   return (
     <SafeAreaView className="flex-1 px-4 pb-0">
       <Text className="text-center text-2xl mb-2 border-b-2">Books</Text>
       <View className="px-5 flex-1">
-        <FilterExpandable
-          setAppliedFilter={setAppliedFilter}
-          setSortBy={setSortBy}
-          setSortOrder={setSortOrder}
-          removeFilter={removeFilter}
-        />
+        <FilterExpandable removeFilter={removeFilter} />
         <View className="flex flex-row flex-wrap gap-2 mt-1">
           {activeSort && (
             <TouchableOpacity
