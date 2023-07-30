@@ -31,8 +31,8 @@ const Books = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("inait");
-  }, []);
+    setShownBooks(books);
+  }, [books]);
 
   useEffect(() => {
     setShownBooks(sortBooks(shownBooks, appliedSorts));

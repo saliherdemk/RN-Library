@@ -1,11 +1,16 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Tabs } from "expo-router";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Books from "./books";
+import Dashboard from "./dashboard";
+import Account from "./account";
 
-export default () => {
+export default function DrawerLayout() {
+  const Tabs = createBottomTabNavigator();
   return (
-    <Tabs screenOptions={{ unmountOnBlur: true, headerShown: false }}>
+    <Tabs.Navigator screenOptions={{ unmountOnBlur: true, headerShown: false }}>
       <Tabs.Screen
         name="books"
+        component={Books}
         options={{
           tabBarLabel: "Home",
           tabBarIcon: ({ color, size }) => {
@@ -18,6 +23,7 @@ export default () => {
 
       <Tabs.Screen
         name="dashboard"
+        component={Dashboard}
         options={{
           tabBarLabel: "Dashboard",
           tabBarIcon: ({ color, size }) => {
@@ -32,6 +38,7 @@ export default () => {
         }}
       />
       <Tabs.Screen
+        component={Account}
         name="account"
         options={{
           tabBarLabel: "Account",
@@ -46,6 +53,6 @@ export default () => {
           },
         }}
       />
-    </Tabs>
+    </Tabs.Navigator>
   );
-};
+}

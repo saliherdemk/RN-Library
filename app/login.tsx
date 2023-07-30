@@ -87,7 +87,6 @@ const Login = () => {
 
       await downloadImage(data.user.id);
 
-      router.replace("/");
       return;
     }
     setError("Unexpected error");

@@ -102,7 +102,6 @@ const Register = () => {
         .insert({ id: data.user.id, username: username });
 
       dispatch(setUser(data.user));
-      router.replace("/");
 
       return;
     }
