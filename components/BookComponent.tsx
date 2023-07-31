@@ -1,14 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Image, Text, View } from "react-native";
 import { formatDate } from "../helper/formatDate";
 import { BookType } from "../types/bookTypes";
+import { supabase } from "../services/supabase";
+
+const COVER_URL_PREFIX =
+  "https://xumckurqdpzvoorkxxwr.supabase.co/storage/v1/object/public/book_covers/";
 
 const BookComponent = ({ book }: { book: BookType }) => {
   return (
     <View className="w-full my-4 flex items-center bg-white shadow rounded-lg ">
-      <View className="w-28 h-28 rounded-full overflow-hidden mt-2 ">
+      <View className="w-28 h-28 rounded overflow-hidden mt-8 ">
         <Image
-          source={require("../assets/cover_placeholder.png")}
+          source={{
+            uri:
+              COVER_URL_PREFIX +
+              (book.has_cover ? book.isbn : "cover_placeholder.png"),
+          }}
           className="w-full h-full"
           resizeMode="cover"
         />
@@ -24,7 +32,7 @@ const BookComponent = ({ book }: { book: BookType }) => {
         <View className="flex flex-row">
           <Text className="text-gray-600">by </Text>
           <View>
-            {book.authors.map((author: string, index: number) => (
+            {book.authors?.map((author: string, index: number) => (
               <Text key={author}>
                 {author}
                 {index !== book.authors.length - 2 && <Text>,</Text>}

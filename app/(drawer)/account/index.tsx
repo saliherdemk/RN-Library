@@ -7,6 +7,8 @@ import { Button } from "react-native-elements";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { removeUser, setUserImageUrl } from "../../../redux/slicers/userSlicer";
 import { supabase } from "../../../services/supabase";
+import * as DocumentPicker from "expo-document-picker";
+
 const Account = () => {
   const [isBtnLoading, setIsBtnLoading] = useState(false);
   const user = useAppSelector((state) => state.userData.user);
@@ -15,50 +17,38 @@ const Account = () => {
 
   const router = useRouter();
 
-  const uploadFromURI = async (photo: any) => {
-    let uri = photo.assets[0].uri;
-    const ext = uri.substring(uri.lastIndexOf(".") + 1);
-
-    const fileName = user?.id as string;
-
-    var formData = new FormData();
-    const fileData = {
-      uri: uri,
-      name: fileName,
-      type: photo.assets[0].type ? `image/${ext}` : `video/${ext}`,
-    };
-
-    const blob = new Blob([JSON.stringify(fileData)], {
-      type: "application/json",
-    });
-    formData.append("files", blob);
-
-    const { data: _, error: updateErr } = await supabase.storage
-      .from("avatars")
-      .update(fileName, formData, {
-        cacheControl: "3600",
-        upsert: true,
-      });
-    if (updateErr?.message == "The resource was not found") {
-      const { data, error } = await supabase.storage
-        .from("avatars")
-        .upload(fileName, formData);
-    }
-  };
-
-  const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 4],
-      quality: 1,
+  const handleProfilePhotoUpload = async () => {
+    const result = await DocumentPicker.getDocumentAsync({
+      type: "image/*",
     });
 
     if (!result.canceled) {
-      dispatch(setUserImageUrl(result.assets[0].uri));
+      const file = {
+        //@ts-expect-error
+        uri: result.uri,
+        name: user?.id,
+        type: "image/*",
+      };
 
-      await uploadFromURI(result);
+      const { data, error } = await supabase.storage
+        .from("avatars")
+        //@ts-expect-error
+        .upload(file.name, file, {
+          contentType: "image/*",
+        });
+
+      if (error?.message == "The resource already exists") {
+        const { data, error: updateError } = await supabase.storage
+          .from("avatars")
+          //@ts-expect-error
+          .update(file.name, file, {
+            contentType: "image/*",
+            cacheControl: "3600",
+            upsert: true,
+          });
+        updateError && alert("Error updating profile photo.");
+      }
+      dispatch(setUserImageUrl(file.uri));
     }
   };
 
@@ -77,7 +67,7 @@ const Account = () => {
       <View className="flex-1 mt-[20%] items-center">
         <TouchableOpacity
           className="rounded-full overflow-hidden w-40 h-40 bg-white shadow "
-          onPress={pickImage}
+          onPress={handleProfilePhotoUpload}
         >
           {
             <Image
@@ -95,13 +85,7 @@ const Account = () => {
 
         <Text>{user?.email}</Text>
 
-        <Button
-          onPress={() => {
-            singOut();
-            router.replace("/login");
-          }}
-          title="Sign Out"
-        ></Button>
+        <Button onPress={singOut} title="Sign Out"></Button>
       </View>
     </>
   );

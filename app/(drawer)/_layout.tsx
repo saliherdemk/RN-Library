@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Books from "./books";
 import Dashboard from "./dashboard";
 import Account from "./account";
+import DashBoardLayout from "./dashboard/_layout";
 
 export default function DrawerLayout() {
   const Tabs = createBottomTabNavigator();
@@ -23,7 +24,7 @@ export default function DrawerLayout() {
 
       <Tabs.Screen
         name="dashboard"
-        component={Dashboard}
+        component={DashBoardLayout}
         options={{
           tabBarLabel: "Dashboard",
           tabBarIcon: ({ color, size }) => {

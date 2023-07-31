@@ -20,30 +20,40 @@ import {
 import { addBookToUserBooks } from "../../../redux/slicers/userSlicer";
 import BookService from "../../../services/bookService";
 import FilterService from "../../../services/filterService";
+import * as DocumentPicker from "expo-document-picker";
+import { supabase } from "../../../services/supabase";
 
 const AddBook = () => {
   const [title, setTitle] = useState("asd");
   const [isbn, setIsbn] = useState("qwe");
   const [type, setType] = useState("asd");
   const [authors, setAuthors] = useState("asdqwe");
+  const [cover, setCover] = useState<{
+    uri: string;
+    name: string | undefined;
+    type: string;
+  } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const user = useAppSelector((state) => state.userData.user);
   const dispatch = useAppDispatch();
 
-  const [image, setImage] = useState<string | null>(null);
   const [isBtnLoading, setIsBtnLoading] = useState(false);
   const router = useRouter();
   const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 4],
-      quality: 1,
+    const result = await DocumentPicker.getDocumentAsync({
+      type: "image/*",
     });
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      const file = {
+        //@ts-expect-error
+        uri: result.uri,
+        name: isbn,
+        type: "image/*",
+      };
+
+      setCover(file);
+      return;
     }
   };
 
@@ -67,7 +77,7 @@ const AddBook = () => {
       user?.id,
       type,
       title,
-      "",
+      cover,
       authors
     );
     if (response?.err) {
@@ -106,8 +116,8 @@ const AddBook = () => {
           {
             <Image
               source={
-                image
-                  ? { uri: image }
+                cover
+                  ? { uri: cover.uri }
                   : require("../../../assets/cover_placeholder.png")
               }
               className="w-full h-full"

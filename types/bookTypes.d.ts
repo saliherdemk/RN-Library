@@ -1,6 +1,6 @@
 export interface BookType {
   authors: Array<string>;
-  cover_url: string;
+  has_cover: boolean;
   isbn: string;
   title: string;
   type: string;
@@ -12,7 +12,7 @@ export interface ReturnBookType {
   created_at: any;
   title: any;
   type: any;
-  cover_url: any;
+  has_cover: any;
   users: {
     username: any;
   }[];

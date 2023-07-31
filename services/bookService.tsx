@@ -41,14 +41,24 @@ const addBook = async (
   publisher_id: string | undefined,
   type: string,
   title: string,
-  cover_url: string,
+  cover: {
+    uri: string;
+    name: string | undefined;
+    type: string;
+  } | null,
   authors: string
 ) => {
   const typeData = await getType(type);
   const { data: bookData, error: bookErr } = await supabase
     .from("books")
-    .insert({ isbn, publisher_id, type: typeData?.name, title, cover_url })
-    .select("isbn,type(name),title,cover_url,created_at,publisher_id(username)")
+    .insert({
+      isbn,
+      publisher_id,
+      type: typeData?.name,
+      title,
+      has_cover: cover != null,
+    })
+    .select("isbn,type(name),title,has_cover,created_at,publisher_id(username)")
     .single();
   if (bookErr?.code == "23505") {
     return { err: "This book already exists", data: null };
@@ -77,9 +87,22 @@ const addBook = async (
   if (hasErr) {
     return { err: "Something went wrong during the insertion", data: null };
   }
+
+  if (cover) {
+    const { data, error } = await supabase.storage
+      .from("book_covers")
+      //@ts-expect-error
+      .upload(isbn, cover, {
+        contentType: "image/*",
+      });
+    if (error) {
+      return { err: "Error uploading cover.", data: null };
+    }
+  }
+
   let bookObj: BookType = {
     authors: authorArr,
-    cover_url: bookData?.cover_url,
+    has_cover: bookData?.has_cover,
     created_at: bookData?.created_at,
     isbn: bookData?.isbn,
     title: bookData?.title,
@@ -104,13 +127,13 @@ const editBook = async (
   isbn: string,
   type: string,
   title: string,
-  cover_url: string,
+  has_cover: boolean,
   authors: string
 ) => {
   const typeData = await getType(type);
   const { error } = await supabase
     .from("books")
-    .update({ type: typeData?.name, title, cover_url })
+    .update({ type: typeData?.name, title, has_cover })
     .eq("isbn", isbn);
 
   if (error) return { err: error.message, data: null };
@@ -159,8 +182,8 @@ const editBook = async (
   let bookObj: BookType = {
     authors: authorArr,
     isbn,
-    cover_url: cover_url,
-    title: title,
+    has_cover,
+    title,
     type: typeData?.name,
     created_at: "",
     publisher: "",
@@ -178,7 +201,7 @@ const getBooks = async () => {
   const { data, error } = await supabase
     .from("books")
     .select(
-      "isbn, created_at,title,type,cover_url,users(username), AuthorBook(author)"
+      "isbn, created_at,title,type,has_cover,users(username), AuthorBook(author)"
     )
     .order("created_at", { ascending: false });
 
@@ -189,7 +212,7 @@ const getBooksByPublisher = async (id: string) => {
   const { data, error } = await supabase
     .from("books")
     .select(
-      "isbn, created_at,title,type,cover_url,users(username), AuthorBook(author)"
+      "isbn, created_at,title,type,has_cover,users(username), AuthorBook(author)"
     )
     .eq("publisher_id", id)
     .order("created_at", { ascending: false });
@@ -201,7 +224,7 @@ const getBookByISBN = async (isbn: string) => {
   const { data, error } = await supabase
     .from("books")
     .select(
-      "isbn, created_at,title,type,cover_url,users(username), AuthorBook(author)"
+      "isbn, created_at,title,type,has_cover,users(username), AuthorBook(author)"
     )
     .eq("isbn", isbn)
     .single();
@@ -213,7 +236,7 @@ const getUsersBooks = async (id: string) => {
   const { data, error } = await supabase
     .from("books")
     .select(
-      "isbn, created_at,title,type,cover_url,users(username), AuthorBook(author)"
+      "isbn, created_at,title,type,has_cover,users(username), AuthorBook(author)"
     )
     .eq("publisher_id", id)
     .order("created_at", { ascending: false });
@@ -223,7 +246,7 @@ const getUsersBooks = async (id: string) => {
 
 const formatData = (data: ReturnBookType[] | null) => {
   const result = data?.map((book) => ({
-    cover_url: book.cover_url,
+    has_cover: book.has_cover,
     created_at: book.created_at,
     isbn: book.isbn,
     title: book.title,
@@ -239,7 +262,7 @@ const formatSingleBook = (book: ReturnBookType | null) => {
   var result = null;
   if (book) {
     result = {
-      cover_url: book.cover_url,
+      has_cover: book.has_cover,
       created_at: book.created_at,
       isbn: book.isbn,
       title: book.title,
