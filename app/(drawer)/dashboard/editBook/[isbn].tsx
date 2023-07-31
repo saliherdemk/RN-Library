@@ -16,6 +16,10 @@ import { setTypesFilter } from "../../../../redux/slicers/filterSlicer";
 import { editBookFromUserBooks } from "../../../../redux/slicers/userSlicer";
 import BookService from "../../../../services/bookService";
 import FilterService from "../../../../services/filterService";
+import { COVER_URL_PREFIX } from "../../../../helper/coverUrlPrefix";
+import * as DocumentPicker from "expo-document-picker";
+import { ImageFileType } from "../../../../types/bookTypes";
+import { AntDesign } from '@expo/vector-icons'; 
 
 const EditBook = () => {
   const { isbn } = useSearchParams();
@@ -24,16 +28,42 @@ const EditBook = () => {
   const [type, setType] = useState("");
   const [authors, setAuthors] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const [coverUrlSuffix, setCoverUrlSuffix] = useState<string>("placeholder");
+  const [selectedImage, setSelectedImage] = useState<ImageFileType | "placeholder" | null>(null);
   const [isBtnLoading, setIsBtnLoading] = useState(false);
 
   const dispatch = useDispatch();
   const router = useRouter();
 
+  const pickImage = async () => {
+    const result = await DocumentPicker.getDocumentAsync({
+      type: "image/*",
+    });
+
+    if (result.type == "success") {
+      const file = {
+        uri: result.uri,
+        name: isbn as string + Date.now(),
+        type: "image/*",
+      };
+
+      setSelectedImage(file);
+      return;
+    }
+  };
+
   const handleEdit = async () => {
     const isbnValue = typeof isbn === "string" ? isbn : "";
 
     setIsBtnLoading(true);
-    const Obj = await BookService.editBook(isbnValue, type, title, "", authors);
+    const Obj = await BookService.editBook(
+      isbnValue,
+      type,
+      title,
+      selectedImage,
+      coverUrlSuffix,
+      authors
+    );
     if (Obj?.err) {
       setError(Obj?.err);
       setIsBtnLoading(false);
@@ -56,17 +86,26 @@ const EditBook = () => {
   const fetchBook = async (isbn: string) => {
     const book = await BookService.getBookByISBN(isbn);
     if (book) {
-      setTitle(book?.title);
-      setType(book?.type);
-
+      setTitle(book.title);
+      setType(book.type);
+      setCoverUrlSuffix(book.cover_url_suffix);
       setAuthors(book?.authors.join("-"));
     }
   };
 
+  const clearImage = () =>{
+    if(selectedImage !== "placeholder" && !selectedImage){
+      setSelectedImage("placeholder")
+      return
+    }
+    setSelectedImage(null)
+
+  }
+
   useEffect(() => {
     // @ts-expect-error
-    fetchBook(isbn);
-  }, []);
+    isbn && fetchBook(isbn);
+  }, [isbn]);
 
   return (
     <SafeAreaView className="flex-1 pt-[5%] items-center px-8 gap-3">
@@ -77,19 +116,28 @@ const EditBook = () => {
           presentation: "modal",
         }}
       />
-
+  <View>
       <TouchableOpacity
-        className="rounded-full overflow-hidden w-40 h-40 bg-white shadow "
-        // onPress={pickImage}
+        className="rounded overflow-hidden w-40 h-40 bg-white shadow"
+        onPress={pickImage}
       >
         {
           <Image
-            source={require("../../../../assets/cover_placeholder.png")}
+            source={{
+              uri: selectedImage
+                ? selectedImage != "placeholder"? selectedImage.uri: COVER_URL_PREFIX + selectedImage
+                : COVER_URL_PREFIX + coverUrlSuffix,
+            }}
             className="w-full h-full"
             resizeMode="cover"
           />
         }
       </TouchableOpacity>
+      {(coverUrlSuffix != "placeholder" &&  selectedImage !== "placeholder") &&
+      <View className="absolute right-0 -m-2 bg-white rounded-full">
+      <AntDesign onPress={clearImage} name="closecircle" size={24} color="black"  />
+      </View>
+      }</View>
       {error && <Text className="text-rose-500">{error}</Text>}
       <View className="w-full ">
         <Text className="text-lg">Title</Text>

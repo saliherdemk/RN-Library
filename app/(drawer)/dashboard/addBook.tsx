@@ -22,17 +22,15 @@ import BookService from "../../../services/bookService";
 import FilterService from "../../../services/filterService";
 import * as DocumentPicker from "expo-document-picker";
 import { supabase } from "../../../services/supabase";
+import { ImageFileType } from "../../../types/bookTypes";
+import { COVER_URL_PREFIX } from "../../../helper/coverUrlPrefix";
 
 const AddBook = () => {
   const [title, setTitle] = useState("asd");
   const [isbn, setIsbn] = useState("qwe");
   const [type, setType] = useState("asd");
   const [authors, setAuthors] = useState("asdqwe");
-  const [cover, setCover] = useState<{
-    uri: string;
-    name: string | undefined;
-    type: string;
-  } | null>(null);
+  const [coverFile, setCoverFile] = useState<ImageFileType | null>(null);
   const [error, setError] = useState<string | null>(null);
   const user = useAppSelector((state) => state.userData.user);
   const dispatch = useAppDispatch();
@@ -44,15 +42,14 @@ const AddBook = () => {
       type: "image/*",
     });
 
-    if (!result.canceled) {
+    if (result.type == "success") {
       const file = {
-        //@ts-expect-error
         uri: result.uri,
-        name: isbn,
+        name: isbn + Date.now(),
         type: "image/*",
       };
 
-      setCover(file);
+      setCoverFile(file);
       return;
     }
   };
@@ -71,13 +68,13 @@ const AddBook = () => {
   const handleSubmit = async () => {
     setIsBtnLoading(true);
     if (checkErrors()) return;
-
+    var updatedFile = coverFile? {...coverFile, name: isbn + Date.now()} : null
     const response = await BookService.addBook(
       isbn,
       user?.id,
       type,
       title,
-      cover,
+      updatedFile,
       authors
     );
     if (response?.err) {
@@ -110,16 +107,16 @@ const AddBook = () => {
     <>
       <SafeAreaView className="flex-1 pt-[5%] items-center px-8 gap-3">
         <TouchableOpacity
-          className="rounded-full overflow-hidden w-40 h-40 bg-white shadow "
+          className="rounded overflow-hidden w-40 h-40 bg-white shadow "
           onPress={pickImage}
         >
           {
             <Image
-              source={
-                cover
-                  ? { uri: cover.uri }
-                  : require("../../../assets/cover_placeholder.png")
-              }
+              source={{
+                uri: coverFile
+                  ? coverFile.uri
+                  : COVER_URL_PREFIX + "placeholder",
+              }}
               className="w-full h-full"
               resizeMode="cover"
             />

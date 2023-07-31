@@ -3,9 +3,7 @@ import { Image, Text, View } from "react-native";
 import { formatDate } from "../helper/formatDate";
 import { BookType } from "../types/bookTypes";
 import { supabase } from "../services/supabase";
-
-const COVER_URL_PREFIX =
-  "https://xumckurqdpzvoorkxxwr.supabase.co/storage/v1/object/public/book_covers/";
+import { COVER_URL_PREFIX } from "../helper/coverUrlPrefix";
 
 const BookComponent = ({ book }: { book: BookType }) => {
   return (
@@ -13,9 +11,7 @@ const BookComponent = ({ book }: { book: BookType }) => {
       <View className="w-28 h-28 rounded overflow-hidden mt-8 ">
         <Image
           source={{
-            uri:
-              COVER_URL_PREFIX +
-              (book.has_cover ? book.isbn : "cover_placeholder.png"),
+            uri: COVER_URL_PREFIX + book.cover_url_suffix,
           }}
           className="w-full h-full"
           resizeMode="cover"

@@ -1,6 +1,6 @@
 export interface BookType {
   authors: Array<string>;
-  has_cover: boolean;
+  cover_url_suffix: string;
   isbn: string;
   title: string;
   type: string;
@@ -12,7 +12,7 @@ export interface ReturnBookType {
   created_at: any;
   title: any;
   type: any;
-  has_cover: any;
+  cover_url_suffix: any;
   users: {
     username: any;
   }[];
@@ -42,4 +42,10 @@ export interface authBookData {
       username: string | null;
     };
   };
+}
+
+export interface ImageFileType {
+  uri: string;
+  name: string;
+  type: string;
 }

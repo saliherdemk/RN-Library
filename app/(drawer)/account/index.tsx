@@ -22,9 +22,8 @@ const Account = () => {
       type: "image/*",
     });
 
-    if (!result.canceled) {
+    if (result.type == "success") {
       const file = {
-        //@ts-expect-error
         uri: result.uri,
         name: user?.id,
         type: "image/*",

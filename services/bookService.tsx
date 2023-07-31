@@ -1,4 +1,4 @@
-import { BookType, ReturnBookType } from "../types/bookTypes";
+import { BookType, ImageFileType, ReturnBookType } from "../types/bookTypes";
 import { supabase } from "./supabase";
 
 const getAuthor = async (name: string) => {
@@ -41,11 +41,7 @@ const addBook = async (
   publisher_id: string | undefined,
   type: string,
   title: string,
-  cover: {
-    uri: string;
-    name: string | undefined;
-    type: string;
-  } | null,
+  cover: ImageFileType | null,
   authors: string
 ) => {
   const typeData = await getType(type);
@@ -56,9 +52,11 @@ const addBook = async (
       publisher_id,
       type: typeData?.name,
       title,
-      has_cover: cover != null,
+      cover_url_suffix: cover ? cover.name : "placeholder",
     })
-    .select("isbn,type(name),title,has_cover,created_at,publisher_id(username)")
+    .select(
+      "isbn,type(name),title,cover_url_suffix,created_at,publisher_id(username)"
+    )
     .single();
   if (bookErr?.code == "23505") {
     return { err: "This book already exists", data: null };
@@ -92,7 +90,7 @@ const addBook = async (
     const { data, error } = await supabase.storage
       .from("book_covers")
       //@ts-expect-error
-      .upload(isbn, cover, {
+      .upload(cover.name, cover, {
         contentType: "image/*",
       });
     if (error) {
@@ -102,7 +100,7 @@ const addBook = async (
 
   let bookObj: BookType = {
     authors: authorArr,
-    has_cover: bookData?.has_cover,
+    cover_url_suffix: bookData?.cover_url_suffix,
     created_at: bookData?.created_at,
     isbn: bookData?.isbn,
     title: bookData?.title,
@@ -118,8 +116,16 @@ const addBook = async (
   };
 };
 
-const deleteBook = async (isbn: string) => {
+const deleteBook = async (isbn: string,coverUrl: string) => {
   const { error } = await supabase.from("books").delete().eq("isbn", isbn);
+  if(coverUrl !== "placeholder"){
+
+  const { data, error: imageErr } = await supabase
+  .storage
+  .from('book_covers')
+  .remove([coverUrl])
+}
+
   return error;
 };
 
@@ -127,18 +133,21 @@ const editBook = async (
   isbn: string,
   type: string,
   title: string,
-  has_cover: boolean,
+  cover: ImageFileType | "placeholder" | null  ,
+  oldCover: string,
   authors: string
 ) => {
   const typeData = await getType(type);
+  const cover_url_suffix = cover == "placeholder" ? cover as string : cover? cover.name : oldCover
   const { error } = await supabase
     .from("books")
-    .update({ type: typeData?.name, title, has_cover })
+    .update({ type: typeData?.name, title, cover_url_suffix,
+  })
     .eq("isbn", isbn);
 
   if (error) return { err: error.message, data: null };
   // supabase doesn't allow to relational update for now.
-  // Maybe we can write an edge function to handle this butt for now,
+  // Maybe we can write an edge function to handle this but for now,
   // lets delete and insert again.
 
   const { data, error: delErr } = await supabase
@@ -179,10 +188,34 @@ const editBook = async (
     hasErr = hasErr && authBookErr != null;
   }
   if (hasError) return { err: "Something went wrong", data: null };
+
+  if(cover_url_suffix == "placeholder"){
+    const {  error: imageErr } = await supabase.storage
+      .from('book_covers')
+      .remove([oldCover])
+  }
+
+  if (cover && cover !== "placeholder") {
+    const { data, error } = await supabase.storage
+      .from("book_covers")
+      //@ts-expect-error
+      .upload(cover.name, cover, {
+        contentType: "image/*",
+      });
+
+      if(oldCover !== "placeholder"){
+
+      const {  error: imageErr } = await supabase.storage
+      .from('book_covers')
+      .remove([oldCover])
+    }
+
+  } 
+
   let bookObj: BookType = {
     authors: authorArr,
     isbn,
-    has_cover,
+    cover_url_suffix,
     title,
     type: typeData?.name,
     created_at: "",
@@ -201,7 +234,7 @@ const getBooks = async () => {
   const { data, error } = await supabase
     .from("books")
     .select(
-      "isbn, created_at,title,type,has_cover,users(username), AuthorBook(author)"
+      "isbn, created_at,title,type,cover_url_suffix,users(username), AuthorBook(author)"
     )
     .order("created_at", { ascending: false });
 
@@ -212,7 +245,7 @@ const getBooksByPublisher = async (id: string) => {
   const { data, error } = await supabase
     .from("books")
     .select(
-      "isbn, created_at,title,type,has_cover,users(username), AuthorBook(author)"
+      "isbn, created_at,title,type,cover_url_suffix,users(username), AuthorBook(author)"
     )
     .eq("publisher_id", id)
     .order("created_at", { ascending: false });
@@ -224,7 +257,7 @@ const getBookByISBN = async (isbn: string) => {
   const { data, error } = await supabase
     .from("books")
     .select(
-      "isbn, created_at,title,type,has_cover,users(username), AuthorBook(author)"
+      "isbn, created_at,title,type,cover_url_suffix,users(username), AuthorBook(author)"
     )
     .eq("isbn", isbn)
     .single();
@@ -236,7 +269,7 @@ const getUsersBooks = async (id: string) => {
   const { data, error } = await supabase
     .from("books")
     .select(
-      "isbn, created_at,title,type,has_cover,users(username), AuthorBook(author)"
+      "isbn, created_at,title,type,cover_url_suffix,users(username), AuthorBook(author)"
     )
     .eq("publisher_id", id)
     .order("created_at", { ascending: false });
@@ -246,7 +279,7 @@ const getUsersBooks = async (id: string) => {
 
 const formatData = (data: ReturnBookType[] | null) => {
   const result = data?.map((book) => ({
-    has_cover: book.has_cover,
+    cover_url_suffix: book.cover_url_suffix,
     created_at: book.created_at,
     isbn: book.isbn,
     title: book.title,
@@ -262,7 +295,7 @@ const formatSingleBook = (book: ReturnBookType | null) => {
   var result = null;
   if (book) {
     result = {
-      has_cover: book.has_cover,
+      cover_url_suffix: book.cover_url_suffix,
       created_at: book.created_at,
       isbn: book.isbn,
       title: book.title,

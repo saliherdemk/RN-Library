@@ -17,7 +17,7 @@ const Dashboard = () => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const handleDeletion = (isbn: string) => {
+  const handleDeletion = (isbn: string,cover_url_suffix: string) => {
     Alert.alert("Delete Book", "You can not undo this action", [
       {
         text: "Cancel",
@@ -29,7 +29,7 @@ const Dashboard = () => {
       {
         text: "OK",
         onPress: async () => {
-          const err = await BookService.deleteBook(isbn);
+          const err = await BookService.deleteBook(isbn,cover_url_suffix);
           if (!err) {
             dispatch(removeBookFromBooks(isbn));
             dispatch(removeBookFromUserBooks(isbn));
@@ -53,11 +53,12 @@ const Dashboard = () => {
         {books &&
           books.map((book: BookType) => (
             <View key={book.isbn} className="pb-2">
+
               <BookComponent book={book} />
               <View className="flex flex-row w-full justify-center ">
                 <TouchableOpacity
                   onPress={() => {
-                    handleDeletion(book.isbn);
+                    handleDeletion(book.isbn,book.cover_url_suffix);
                   }}
                   className="flex-1 bg-rose-500 rounded-bl py-2"
                 >
