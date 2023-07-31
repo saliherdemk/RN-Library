@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Image,
+  ScrollView,
   Text,
   TouchableOpacity,
   View,
@@ -94,7 +95,8 @@ const EditBook = () => {
   };
 
   const clearImage = () =>{
-    if(selectedImage !== "placeholder" && !selectedImage){
+   
+    if(!selectedImage){
       setSelectedImage("placeholder")
       return
     }
@@ -108,6 +110,8 @@ const EditBook = () => {
   }, [isbn]);
 
   return (
+    <ScrollView>
+
     <SafeAreaView className="flex-1 pt-[5%] items-center px-8 gap-3">
       <Stack.Screen
         options={{
@@ -133,7 +137,7 @@ const EditBook = () => {
           />
         }
       </TouchableOpacity>
-      {(coverUrlSuffix != "placeholder" &&  selectedImage !== "placeholder") &&
+      {(selectedImage !== "placeholder") &&
       <View className="absolute right-0 -m-2 bg-white rounded-full">
       <AntDesign onPress={clearImage} name="closecircle" size={24} color="black"  />
       </View>
@@ -186,6 +190,8 @@ const EditBook = () => {
         )}
       </TouchableOpacity>
     </SafeAreaView>
+    </ScrollView>
+
   );
 };
 

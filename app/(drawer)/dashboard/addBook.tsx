@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   Alert,
   Image,
+  ScrollView,
   Text,
   TouchableOpacity,
   View,
@@ -105,6 +106,7 @@ const AddBook = () => {
 
   return (
     <>
+    <ScrollView>
       <SafeAreaView className="flex-1 pt-[5%] items-center px-8 gap-3">
         <TouchableOpacity
           className="rounded overflow-hidden w-40 h-40 bg-white shadow "
@@ -187,7 +189,7 @@ const AddBook = () => {
             Cancel
           </Text>
         </Pressable> */}
-      </SafeAreaView>
+      </SafeAreaView></ScrollView>
     </>
   );
 };
