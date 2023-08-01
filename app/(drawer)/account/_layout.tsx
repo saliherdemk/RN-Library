@@ -1,16 +1,15 @@
+import { Stack } from "expo-router";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Profile from "./[username]";
+import Account from ".";
 
-export default function ProfileLayout() {
+function AccountLayout() {
   const Stack = createNativeStackNavigator();
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen
-        name="profile/[username]"
-        component={Profile}
-        options={{ headerShown: true }}
-      />
+      <Stack.Screen name="index" component={Account} />
     </Stack.Navigator>
   );
 }
+
+export default AccountLayout;

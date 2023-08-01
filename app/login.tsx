@@ -80,39 +80,16 @@ const Login = () => {
     }
     if (data.user) {
       dispatch(setUser(data.user));
-
       dispatch(setBooks(await BookService.getBooks()));
       dispatch(setUserBooks(await BookService.getUsersBooks(data.user.id)));
       dispatch(setTypesFilter(await FilterService.getAllTypeFilters()));
       dispatch(setAuthorsFilter(await FilterService.getAllAuthorFilters()));
       dispatch(setFavBooks(await BookService.getUsersFavBooks(data.user.id)));
-      await downloadImage(data.user.id);
-
       return;
     }
     setError("Unexpected error");
     setIsBtnLoading(false);
   };
-
-  // https://supabase.com/docs/guides/getting-started/tutorials/with-expo#create-an-upload-widget
-  async function downloadImage(path: string): Promise<void> {
-    try {
-      const { data } = await supabase.storage.from("avatars").download(path);
-      if (!data) {
-        dispatch(setUserImageUrl(null));
-        return;
-      }
-      const fr = new FileReader();
-      fr.readAsDataURL(data);
-      fr.onload = () => {
-        dispatch(setUserImageUrl(fr.result as string));
-      };
-    } catch (error) {
-      if (error instanceof Error) {
-        console.log("Error downloading image: ", error.message);
-      }
-    }
-  }
 
   return (
     <SafeAreaView className="flex-1 items-center justify-center ">

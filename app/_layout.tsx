@@ -8,6 +8,7 @@ import DrawerLayout from "./(drawer)/_layout";
 import Login from "./login";
 import Register from "./register";
 import BookDetailsLayout from "./bookDetails/_layout";
+import ProfileLayout from "./profile/_layout";
 
 function Layout() {
   const user = useAppSelector((state) => state.userData.user);
@@ -20,6 +21,7 @@ function Layout() {
         <Stack.Group>
           <Stack.Screen name="(drawer)" component={DrawerLayout} />
           <Stack.Screen name="bookDetails" component={BookDetailsLayout} />
+          <Stack.Screen name="profile" component={ProfileLayout} />
         </Stack.Group>
       ) : (
         <Stack.Group>

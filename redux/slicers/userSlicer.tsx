@@ -59,8 +59,11 @@ export const userSlice = createSlice({
     setFavBooks: (state, action) => {
       state.favBooks = action.payload;
     },
+
     addBookToFavBooks: (state, action) => {
-      state.favBooks = [action.payload, ...state.favBooks];
+      if (!state.favBooks.includes(action.payload)) {
+        state.favBooks = [action.payload, ...state.favBooks];
+      }
     },
     removeBookFromFavBooks: (state, action) => {
       state.favBooks = state.favBooks.filter(
@@ -71,6 +74,7 @@ export const userSlice = createSlice({
       state.user = null;
       state.userBooks = [];
       state.userImageUrl = null;
+      state.favBooks = [];
     },
   },
 });

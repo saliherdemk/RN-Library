@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Account from "./account";
 import BooksLayout from "./books/_layout";
 import DashBoardLayout from "./dashboard/_layout";
+import AccountLayout from "./account/_layout";
 
 export default function DrawerLayout() {
   const Tabs = createBottomTabNavigator();
@@ -40,8 +41,8 @@ export default function DrawerLayout() {
       />
 
       <Tabs.Screen
-        component={Account}
-        name="account"
+        component={AccountLayout}
+        name="profile"
         options={{
           tabBarLabel: "Account",
           tabBarIcon: ({ color, size }) => {

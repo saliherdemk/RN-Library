@@ -278,16 +278,23 @@ const getUsersBooks = async (id: string) => {
 const getUsersFavBooks = async (user_id: string) => {
   const { data, error } = await supabase
     .from("UserFavBook")
-    .select("isbn(cover_url_suffix)")
+    .select("isbn(cover_url_suffix,isbn)")
     .match({ user_id })
     .order("created_at", { ascending: false });
-  return data;
+
+  return data?.map((item) => item.isbn);
 };
 
-const addBookFromUserFavBooks = async (isbn: string, user_id: string) => {
+const addBookToUserFavBooks = async (isbn: string, user_id: string) => {
+  const { data: d, error: err } = await supabase
+    .from("UserFavBook")
+    .select("isbn(cover_url_suffix,isbn)")
+    .match({ isbn, user_id });
+  if (d) return;
+
   const { data, error } = await supabase
     .from("UserFavBook")
-    .insert({ isbn, user_id });
+    .insert({ isbn: isbn, user_id: user_id });
 };
 
 const removeBookFromUserFavBooks = async (isbn: string, user_id: string) => {
@@ -328,6 +335,15 @@ const formatSingleBook = (book: ReturnBookType | null) => {
   return result;
 };
 
+const getIdByUsername = async (username: string) => {
+  const { data: userData, error } = await supabase
+    .from("users")
+    .select("id")
+    .eq("username", username)
+    .single();
+  console.log(userData);
+};
+
 const BookService = {
   addBook,
   getBooksByPublisher,
@@ -337,8 +353,9 @@ const BookService = {
   getBooks,
   getUsersBooks,
   getUsersFavBooks,
-  addBookFromUserFavBooks,
+  addBookToUserFavBooks,
   removeBookFromUserFavBooks,
+  getIdByUsername,
 };
 
 export default BookService;
