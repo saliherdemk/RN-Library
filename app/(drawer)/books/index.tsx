@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BookComponent from "../../../components/BookComponent";
 import { useAppSelector } from "../../../redux/hooks";
@@ -13,6 +13,7 @@ import {
   resetAppliedFilter,
   setAppliedFilter,
 } from "../../../redux/slicers/filterSlicer";
+import { useRouter } from "expo-router";
 
 const Books = () => {
   const books = useAppSelector((state) => state.bookData.books);
@@ -29,6 +30,7 @@ const Books = () => {
   const [activeFilters, setActiveFilters] = useState<Array<string>>([]);
 
   const dispatch = useDispatch();
+  const router = useRouter();
 
   useEffect(() => {
     setShownBooks(books);
@@ -119,7 +121,16 @@ const Books = () => {
         </View>
         <ScrollView>
           {shownBooks.map((book) => (
-            <BookComponent book={book} key={book.isbn} />
+            <TouchableOpacity
+              onPress={() => {
+                router.push({
+                  pathname: "bookDetails/[isbn]",
+                  params: { isbn: book.isbn },
+                });
+              }}
+            >
+              <BookComponent book={book} key={book.isbn} />
+            </TouchableOpacity>
           ))}
         </ScrollView>
       </View>

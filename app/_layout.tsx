@@ -7,6 +7,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import DrawerLayout from "./(drawer)/_layout";
 import Login from "./login";
 import Register from "./register";
+import BookDetailsLayout from "./bookDetails/_layout";
 
 function Layout() {
   const user = useAppSelector((state) => state.userData.user);
@@ -16,7 +17,10 @@ function Layout() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {user ? (
-        <Stack.Screen name="(drawer)" component={DrawerLayout} />
+        <Stack.Group>
+          <Stack.Screen name="(drawer)" component={DrawerLayout} />
+          <Stack.Screen name="bookDetails" component={BookDetailsLayout} />
+        </Stack.Group>
       ) : (
         <Stack.Group>
           <Stack.Screen name="login" component={Login} />

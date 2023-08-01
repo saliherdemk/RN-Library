@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Image, Text, View } from "react-native";
+import { Image, Pressable, Text, View } from "react-native";
 import { formatDate } from "../helper/formatDate";
 import { BookType } from "../types/bookTypes";
 import { supabase } from "../services/supabase";
 import { COVER_URL_PREFIX } from "../helper/coverUrlPrefix";
+import { useAppSelector } from "../redux/hooks";
+import { MaterialIcons } from "@expo/vector-icons";
+import BookService from "../services/bookService";
+import { useDispatch } from "react-redux";
+import {
+  addBookToFavBooks,
+  removeBookFromFavBooks,
+} from "../redux/slicers/userSlicer";
 
 const BookComponent = ({ book }: { book: BookType }) => {
   return (
@@ -37,6 +45,7 @@ const BookComponent = ({ book }: { book: BookType }) => {
           </View>
         </View>
       </View>
+
       <Text className="self-end text-gray-600 m-2">
         published by {book.publisher}
       </Text>

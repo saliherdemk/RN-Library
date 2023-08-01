@@ -1,12 +1,12 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Books from ".";
+import BookDetails from "./[isbn]";
 
-export default function BooksLayout() {
+export default function BookDetailsLayout() {
   const Stack = createNativeStackNavigator();
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="index" component={Books} />
+      <Stack.Screen name="bookDetails/[isbn]" component={BookDetails} />
     </Stack.Navigator>
   );
 }

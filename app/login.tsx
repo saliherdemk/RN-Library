@@ -18,6 +18,7 @@ import {
   setTypesFilter,
 } from "../redux/slicers/filterSlicer";
 import {
+  setFavBooks,
   setUser,
   setUserBooks,
   setUserImageUrl,
@@ -84,7 +85,7 @@ const Login = () => {
       dispatch(setUserBooks(await BookService.getUsersBooks(data.user.id)));
       dispatch(setTypesFilter(await FilterService.getAllTypeFilters()));
       dispatch(setAuthorsFilter(await FilterService.getAllAuthorFilters()));
-
+      dispatch(setFavBooks(await BookService.getUsersFavBooks(data.user.id)));
       await downloadImage(data.user.id);
 
       return;

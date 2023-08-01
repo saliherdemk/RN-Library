@@ -9,12 +9,14 @@ export interface userState {
   user: User | null;
   userBooks: Array<BookType>;
   userImageUrl: string | null;
+  favBooks: Array<BookType>;
 }
 
 const initialState: userState = {
   user: null,
   userBooks: [],
   userImageUrl: null,
+  favBooks: [],
 };
 
 export const userSlice = createSlice({
@@ -33,7 +35,7 @@ export const userSlice = createSlice({
       state.userBooks = action.payload;
     },
     addBookToUserBooks: (state, action) => {
-      state.userBooks?.unshift(action.payload);
+      state.userBooks = [action.payload, ...state.userBooks];
     },
     editBookFromUserBooks: (state, action) => {
       const updatedBook = action.payload;
@@ -54,6 +56,17 @@ export const userSlice = createSlice({
       );
     },
 
+    setFavBooks: (state, action) => {
+      state.favBooks = action.payload;
+    },
+    addBookToFavBooks: (state, action) => {
+      state.favBooks = [action.payload, ...state.favBooks];
+    },
+    removeBookFromFavBooks: (state, action) => {
+      state.favBooks = state.favBooks.filter(
+        (book) => book.isbn !== action.payload
+      );
+    },
     removeUser: (state, _) => {
       state.user = null;
       state.userBooks = [];
@@ -69,6 +82,9 @@ export const {
   addBookToUserBooks,
   editBookFromUserBooks,
   removeBookFromUserBooks,
+  setFavBooks,
+  addBookToFavBooks,
+  removeBookFromFavBooks,
   removeUser,
 } = userSlice.actions;
 

@@ -116,15 +116,13 @@ const addBook = async (
   };
 };
 
-const deleteBook = async (isbn: string,coverUrl: string) => {
+const deleteBook = async (isbn: string, coverUrl: string) => {
   const { error } = await supabase.from("books").delete().eq("isbn", isbn);
-  if(coverUrl !== "placeholder"){
-
-  const { data, error: imageErr } = await supabase
-  .storage
-  .from('book_covers')
-  .remove([coverUrl])
-}
+  if (coverUrl !== "placeholder") {
+    const { data, error: imageErr } = await supabase.storage
+      .from("book_covers")
+      .remove([coverUrl]);
+  }
 
   return error;
 };
@@ -133,16 +131,16 @@ const editBook = async (
   isbn: string,
   type: string,
   title: string,
-  cover: ImageFileType | "placeholder" | null  ,
+  cover: ImageFileType | "placeholder" | null,
   oldCover: string,
   authors: string
 ) => {
   const typeData = await getType(type);
-  const cover_url_suffix = cover == "placeholder" ? cover as string : cover? cover.name : oldCover
+  const cover_url_suffix =
+    cover == "placeholder" ? (cover as string) : cover ? cover.name : oldCover;
   const { error } = await supabase
     .from("books")
-    .update({ type: typeData?.name, title, cover_url_suffix,
-  })
+    .update({ type: typeData?.name, title, cover_url_suffix })
     .eq("isbn", isbn);
 
   if (error) return { err: error.message, data: null };
@@ -189,14 +187,13 @@ const editBook = async (
   }
   if (hasError) return { err: "Something went wrong", data: null };
 
-  if(oldCover !== "placeholder"){
-    const {  error: imageErr } = await supabase.storage
-      .from('book_covers')
-      .remove([oldCover])
-      if (imageErr) return { err: "Something went wrong", data: null };
+  if (oldCover !== "placeholder") {
+    const { error: imageErr } = await supabase.storage
+      .from("book_covers")
+      .remove([oldCover]);
+    if (imageErr) return { err: "Something went wrong", data: null };
   }
 
-  console.log(cover_url_suffix,cover,oldCover)
   if (cover && cover !== "placeholder") {
     const { data, error } = await supabase.storage
       .from("book_covers")
@@ -204,17 +201,14 @@ const editBook = async (
       .upload(cover.name, cover, {
         contentType: "image/*",
       });
-
-  } 
+  }
   /*
                        cover_url   cover       oldCover
   Old exists new not-ex -> placeholder placeholder qwe1690831946332
   Old not-ex new exists -> qwe1690831999053 {"name": "qwe1690831999053", "type": "image/*", "uri": "file:///data/user/0/host.exp.exponent/cache/DocumentPicker/7170ea22-4180-46ca-acf0-8fdcdde4b4bf.jpg"} placeholder
   Old exists new exists -> qwe1690832027446 {"name": "qwe1690832027446", "type": "image/*", "uri": "file:///data/user/0/host.exp.exponent/cache/DocumentPicker/f220676b-e236-4ce5-9092-161f7586b1b8.jpg"} qwe1690831999053
   Old not-ex new not-ex -> placeholder placeholder placeholder
-  **/ 
-
-
+  **/
 
   let bookObj: BookType = {
     authors: authorArr,
@@ -281,6 +275,28 @@ const getUsersBooks = async (id: string) => {
   return formatData(data);
 };
 
+const getUsersFavBooks = async (user_id: string) => {
+  const { data, error } = await supabase
+    .from("UserFavBook")
+    .select("isbn(cover_url_suffix)")
+    .match({ user_id })
+    .order("created_at", { ascending: false });
+  return data;
+};
+
+const addBookFromUserFavBooks = async (isbn: string, user_id: string) => {
+  const { data, error } = await supabase
+    .from("UserFavBook")
+    .insert({ isbn, user_id });
+};
+
+const removeBookFromUserFavBooks = async (isbn: string, user_id: string) => {
+  const { data, error } = await supabase
+    .from("UserFavBook")
+    .delete()
+    .match({ isbn, user_id });
+};
+
 const formatData = (data: ReturnBookType[] | null) => {
   const result = data?.map((book) => ({
     cover_url_suffix: book.cover_url_suffix,
@@ -320,6 +336,9 @@ const BookService = {
   getBookByISBN,
   getBooks,
   getUsersBooks,
+  getUsersFavBooks,
+  addBookFromUserFavBooks,
+  removeBookFromUserFavBooks,
 };
 
 export default BookService;
