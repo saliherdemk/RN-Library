@@ -61,7 +61,7 @@ export const userSlice = createSlice({
     },
 
     addBookToFavBooks: (state, action) => {
-      if (!state.favBooks.includes(action.payload)) {
+      if (!state.favBooks.some((f) => f.isbn == action.payload.isbn)) {
         state.favBooks = [action.payload, ...state.favBooks];
       }
     },

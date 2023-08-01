@@ -341,7 +341,7 @@ const getIdByUsername = async (username: string) => {
     .select("id")
     .eq("username", username)
     .single();
-  console.log(userData);
+  return userData?.id;
 };
 
 const BookService = {

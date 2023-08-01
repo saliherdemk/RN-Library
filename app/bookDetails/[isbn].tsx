@@ -36,6 +36,17 @@ const BookDetails = () => {
     setIsLoading(true);
   };
 
+  const goToPublisher = (username: string) => {
+    if (username == user?.user_metadata.username) {
+      router.push("account");
+      return;
+    }
+    router.push({
+      pathname: "/profile/[username]",
+      params: { username },
+    });
+  };
+
   const updateDbAdd = async () => {
     user &&
       isbn &&
@@ -116,10 +127,7 @@ const BookDetails = () => {
 
           <TouchableOpacity
             onPress={() => {
-              router.push({
-                pathname: "/profile/[username]",
-                params: { username: book.publisher },
-              });
+              goToPublisher(book.publisher);
             }}
             className="w-full bg-white p-2 pt-4 mt-2 rounded-lg"
           >
