@@ -1,5 +1,3 @@
-import { useAppDispatch, useAppSelector } from "../redux/hooks";
-import { BookType } from "../types/bookTypes";
 import { supabase } from "./supabase";
 
 const getAllTypeFilters = async () => {

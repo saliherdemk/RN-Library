@@ -1,6 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { supabase } from "../../services/supabase";
+import { createSlice } from "@reduxjs/toolkit";
 import { User } from "@supabase/supabase-js";
 import { BookType } from "../../types/bookTypes";
 

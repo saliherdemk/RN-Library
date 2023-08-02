@@ -53,6 +53,13 @@ const filterSlice = createSlice({
     setAppliedSorts: (state, action) => {
       state.appliedSorts = action.payload;
     },
+
+    resetAppliedSorts: (state) => {
+      state.appliedSorts = {
+        sortBy: null,
+        sortOrder: null,
+      };
+    },
   },
 });
 
@@ -62,6 +69,7 @@ export const {
   setAppliedFilter,
   resetAppliedFilter,
   setAppliedSorts,
+  resetAppliedSorts,
 } = filterSlice.actions;
 
 export default filterSlice.reducer;

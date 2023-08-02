@@ -21,10 +21,9 @@ import { setUser, setUserData } from "../redux/slicers/userSlicer";
 import BookService from "../services/bookService";
 import FilterService from "../services/filterService";
 import { supabase } from "../services/supabase";
-import UserService from "../services/userService";
 
 const Login = () => {
-  const [email, setEmail] = useState("saliherdem_kaymak1@hotmail.com");
+  const [email, setEmail] = useState("asffjd@gmail.com");
   const [password, setPassword] = useState("123456");
   const [isBtnLoading, setIsBtnLoading] = useState(false);
   const [error, setError] = useState<String | null>(null);

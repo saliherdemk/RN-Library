@@ -1,9 +1,8 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Account from "./account";
+import AccountLayout from "./account/_layout";
 import BooksLayout from "./books/_layout";
 import DashBoardLayout from "./dashboard/_layout";
-import AccountLayout from "./account/_layout";
 
 export default function DrawerLayout() {
   const Tabs = createBottomTabNavigator();
@@ -42,7 +41,7 @@ export default function DrawerLayout() {
 
       <Tabs.Screen
         component={AccountLayout}
-        name="profile"
+        name="account"
         options={{
           tabBarLabel: "Account",
           tabBarIcon: ({ color, size }) => {

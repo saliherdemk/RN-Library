@@ -1,11 +1,11 @@
-import { View, Text, TouchableOpacity, Alert } from "react-native";
-import React, { useEffect, useState } from "react";
-import { removeBookFromBooks } from "../../redux/slicers/bookSlicer";
-import BookService from "../../services/bookService";
-import { useAppSelector } from "../../redux/hooks";
+import React from "react";
+import { Alert, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch } from "react-redux";
-import { removeBookFromUserBooks } from "../../redux/slicers/userSlicer";
 import { formatDate } from "../../helper/formatDate";
+import { useAppSelector } from "../../redux/hooks";
+import { removeBookFromBooks } from "../../redux/slicers/bookSlicer";
+import { removeBookFromUserBooks } from "../../redux/slicers/userSlicer";
+import BookService from "../../services/bookService";
 
 const BookContainer = ({
   book,

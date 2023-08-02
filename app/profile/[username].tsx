@@ -1,8 +1,7 @@
-import { Fontisto, MaterialIcons } from "@expo/vector-icons";
+import { Stack, useRouter } from "expo-router";
 import { useSearchParams } from "expo-router/src/LocationProvider";
 import React, { useEffect, useState } from "react";
 import {
-  Button,
   FlatList,
   Image,
   Pressable,
@@ -12,9 +11,8 @@ import {
 } from "react-native";
 import { COVER_URL_PREFIX } from "../../helper/coverUrlPrefix";
 import BookService from "../../services/bookService";
-import { Stack, useRouter } from "expo-router";
-import { BookType } from "../../types/bookTypes";
 import UserService from "../../services/userService";
+import { BookType } from "../../types/bookTypes";
 
 const Profile = () => {
   const { username } = useSearchParams();

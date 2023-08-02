@@ -100,7 +100,6 @@ const Register = () => {
       const { error } = await supabase
         .from("users")
         .insert({ id: data.user.id, username: username });
-      console.log(error);
       dispatch(setUser(data.user));
 
       return;

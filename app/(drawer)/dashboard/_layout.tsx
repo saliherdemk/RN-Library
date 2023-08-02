@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Dashboard from ".";
 import AddBook from "./addBook";
 import EditBook from "./editBook/[isbn]";
-import Dashboard from ".";
 
 export default function DashBoardLayout() {
   const Stack = createNativeStackNavigator();

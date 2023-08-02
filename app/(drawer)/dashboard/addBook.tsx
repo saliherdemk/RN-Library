@@ -1,4 +1,4 @@
-import * as ImagePicker from "expo-image-picker";
+import * as DocumentPicker from "expo-document-picker";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { COVER_URL_PREFIX } from "../../../helper/coverUrlPrefix";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { addBookToBooks } from "../../../redux/slicers/bookSlicer";
 import {
@@ -21,10 +22,8 @@ import {
 import { addBookToUserBooks } from "../../../redux/slicers/userSlicer";
 import BookService from "../../../services/bookService";
 import FilterService from "../../../services/filterService";
-import * as DocumentPicker from "expo-document-picker";
-import { supabase } from "../../../services/supabase";
 import { ImageFileType } from "../../../types/bookTypes";
-import { COVER_URL_PREFIX } from "../../../helper/coverUrlPrefix";
+import { trimString } from "../../../helper/trim";
 
 const AddBook = () => {
   const [title, setTitle] = useState("asd");
@@ -75,10 +74,10 @@ const AddBook = () => {
     const response = await BookService.addBook(
       isbn,
       user?.id,
-      type,
+      trimString(type),
       title,
       updatedFile,
-      authors
+      trimString(authors)
     );
     if (response?.err) {
       setError(response.err);

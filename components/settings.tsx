@@ -1,9 +1,9 @@
-import { View, Text, TouchableOpacity } from "react-native";
-import React from "react";
 import { useRouter } from "expo-router";
-import { supabase } from "../services/supabase";
-import { removeUser } from "../redux/slicers/userSlicer";
+import React from "react";
+import { Text, TouchableOpacity, View } from "react-native";
 import { useDispatch } from "react-redux";
+import { removeUser } from "../redux/slicers/userSlicer";
+import { supabase } from "../services/supabase";
 
 const Settings = ({
   roleVis,

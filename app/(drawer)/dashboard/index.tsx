@@ -1,8 +1,7 @@
 import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
-import { Alert, Text, TouchableOpacity, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { Alert, FlatList, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 import BookComponent from "../../../components/BookComponent";
@@ -10,8 +9,6 @@ import { useAppSelector } from "../../../redux/hooks";
 import { removeBookFromBooks } from "../../../redux/slicers/bookSlicer";
 import { removeBookFromUserBooks } from "../../../redux/slicers/userSlicer";
 import BookService from "../../../services/bookService";
-import { BookType } from "../../../types/bookTypes";
-import { FlatList } from "react-native";
 
 const Dashboard = () => {
   const books = useAppSelector((state) => state.userData.data.userBooks);
@@ -82,22 +79,24 @@ const Dashboard = () => {
         )}
         keyExtractor={(item) => item.isbn}
       />
-
-      <AntDesign
+      <TouchableOpacity
         onPress={() => {
           router.push("/dashboard/addBook");
         }}
-        style={{
-          position: "absolute",
-          right: 15,
-          bottom: 15,
-          backgroundColor: "white",
-          borderRadius: 100,
-        }}
-        name="pluscircle"
-        size={40}
-        color="lightgreen"
-      />
+      >
+        <AntDesign
+          style={{
+            position: "absolute",
+            right: 15,
+            bottom: 15,
+            backgroundColor: "white",
+            borderRadius: 100,
+          }}
+          name="pluscircle"
+          size={40}
+          color="lightgreen"
+        />
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };

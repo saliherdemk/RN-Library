@@ -1,3 +1,5 @@
+import { AntDesign } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -7,15 +9,13 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import BookComponent from "../../../components/BookComponent";
-import { useAppSelector } from "../../../redux/hooks";
-import { AntDesign } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
 import { useDispatch } from "react-redux";
+import BookComponent from "../../../components/BookComponent";
 import FilterExpandable from "../../../components/FilterExpandable";
 import { filterBooks, sortBooks } from "../../../helper/filterSortHelpers";
+import { useAppSelector } from "../../../redux/hooks";
 import {
-  resetAppliedFilter,
+  resetAppliedSorts,
   setAppliedFilter,
 } from "../../../redux/slicers/filterSlicer";
 import { BookType } from "../../../types/bookTypes";
@@ -37,6 +37,24 @@ const Books = () => {
   const dispatch = useDispatch();
   const router = useRouter();
 
+  const goDetail = (isbn: string) => {
+    router.push({
+      pathname: "bookDetails/[isbn]",
+      params: { isbn },
+    });
+  };
+
+  const renderItem = ({ item }: { item: BookType }) => (
+    <TouchableOpacity
+      onPress={() => {
+        goDetail(item.isbn);
+      }}
+    >
+      <BookComponent book={item} key={item.isbn} />
+    </TouchableOpacity>
+  );
+  const keyExtractor = (item: BookType) => item.isbn;
+
   useEffect(() => {
     setShownBooks(books);
     setIsLoading(false);
@@ -45,10 +63,9 @@ const Books = () => {
   useEffect(() => {
     shownBooks && setShownBooks(sortBooks(shownBooks, appliedSorts));
     let sortBy = appliedSorts.sortBy as string;
-    let sortOrder = appliedSorts.sortOrder as string;
 
     if (sortBy) {
-      setActiveSort(sortBy + "(" + sortOrder + ")");
+      setActiveSort(sortBy + "(" + appliedSorts.sortOrder + ")");
     }
   }, [appliedSorts]);
 
@@ -62,16 +79,14 @@ const Books = () => {
         });
         continue;
       }
-      if (value) {
-        newActiveFilters.push(key + ":" + value);
-      }
+      value && newActiveFilters.push(key + ":" + value);
     }
 
     setActiveFilters(newActiveFilters);
   }, [appliedFilter]);
 
   const removeSort = useCallback(() => {
-    dispatch(resetAppliedFilter());
+    dispatch(resetAppliedSorts());
     setActiveSort("");
   }, []);
 
@@ -90,15 +105,15 @@ const Books = () => {
       return;
     }
 
-    dispatch(
-      setAppliedFilter({ ...appliedFilter, [splitted[0]]: splitted[1] })
-    );
+    dispatch(setAppliedFilter({ ...appliedFilter, [splitted[0]]: "" }));
   };
 
   return (
     <SafeAreaView className="flex-1 px-4 pb-0">
       {isLoading ? (
-        <ActivityIndicator />
+        <View className="w-full h-full justify-center">
+          <ActivityIndicator size={36} />
+        </View>
       ) : (
         <>
           <Text className="text-center text-2xl mb-2 border-b-2">Books</Text>
@@ -132,19 +147,8 @@ const Books = () => {
             <FlatList
               data={shownBooks}
               className="px-3"
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  onPress={() => {
-                    router.push({
-                      pathname: "bookDetails/[isbn]",
-                      params: { isbn: item.isbn },
-                    });
-                  }}
-                >
-                  <BookComponent book={item} key={item.isbn} />
-                </TouchableOpacity>
-              )}
-              keyExtractor={(item) => item.isbn}
+              renderItem={renderItem}
+              keyExtractor={keyExtractor}
             />
           </View>
         </>

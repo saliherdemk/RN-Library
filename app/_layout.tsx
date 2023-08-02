@@ -1,17 +1,15 @@
-import { Redirect, Stack, useRouter } from "expo-router";
-import { Provider } from "react-redux";
-import { store } from "../redux/store";
-import { useEffect, useState } from "react";
-import { useAppSelector } from "../redux/hooks";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import DrawerLayout from "./(drawer)/_layout";
-import Login from "./login";
-import Register from "./register";
-import BookDetailsLayout from "./bookDetails/_layout";
-import ProfileLayout from "./profile/_layout";
-import AdminDashboard from "./adminDashboard";
-import AdminDashboardLayout from "./adminDashboard/_layout";
+import { useEffect, useState } from "react";
+import { Provider } from "react-redux";
+import { useAppSelector } from "../redux/hooks";
+import { store } from "../redux/store";
 import UserService from "../services/userService";
+import DrawerLayout from "./(drawer)/_layout";
+import AdminDashboardLayout from "./adminDashboard/_layout";
+import BookDetailsLayout from "./bookDetails/_layout";
+import Login from "./login";
+import ProfileLayout from "./profile/_layout";
+import Register from "./register";
 
 function Layout() {
   const user = useAppSelector((state) => state.userData.user);

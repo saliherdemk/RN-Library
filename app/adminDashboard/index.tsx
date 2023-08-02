@@ -1,15 +1,10 @@
-import { View, Text, Pressable } from "react-native";
+import { AntDesign, Entypo } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
-import UserService from "../../services/userService";
-import { Stack } from "expo-router";
-import { FlatList, TouchableOpacity } from "react-native";
+import { FlatList, Pressable, View } from "react-native";
+import BookContainer from "../../components/admin/bookContainer";
 import UserContainer from "../../components/admin/userContainer";
 import { useAppSelector } from "../../redux/hooks";
-import BookService from "../../services/bookService";
-import BookContainer from "../../components/admin/bookContainer";
-import { Fontisto, MaterialIcons } from "@expo/vector-icons";
-import { Entypo } from "@expo/vector-icons";
-import { AntDesign } from "@expo/vector-icons";
+import UserService from "../../services/userService";
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState<
@@ -47,7 +42,7 @@ const AdminDashboard = () => {
   }, [user]);
 
   return (
-    <View>
+    <View className="flex-1">
       <View className="flex-row px-3 pt-0 my-2">
         <Pressable
           disabled={Number(userRole.vis) < 3}
@@ -69,21 +64,25 @@ const AdminDashboard = () => {
           <Entypo name="book" size={24} color="black" />
         </Pressable>
       </View>
-      {showBooks ? (
-        <FlatList
-          data={books}
-          className="p-3"
-          renderItem={({ item }) => <BookContainer book={item} />}
-          keyExtractor={(item) => item.isbn}
-        />
-      ) : (
-        <FlatList
-          data={users}
-          className="p-3"
-          renderItem={({ item }) => <UserContainer user={item} />}
-          keyExtractor={(item) => item.id}
-        />
-      )}
+      <View className="flex-1">
+        {showBooks ? (
+          <FlatList
+            data={books}
+            className="px-3"
+            renderItem={({ item }) => <BookContainer book={item} />}
+            keyExtractor={(item) => item.isbn}
+          />
+        ) : (
+          <FlatList
+            data={users}
+            className="px-3"
+            renderItem={({ item }) => (
+              <UserContainer user={item} authRole={userRole.vis} />
+            )}
+            keyExtractor={(item) => item.id}
+          />
+        )}
+      </View>
     </View>
   );
 };
