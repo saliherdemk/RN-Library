@@ -14,16 +14,16 @@ import { COVER_URL_PREFIX } from "../../helper/coverUrlPrefix";
 import BookService from "../../services/bookService";
 import { Stack, useRouter } from "expo-router";
 import { BookType } from "../../types/bookTypes";
+import UserService from "../../services/userService";
 
 const Profile = () => {
   const { username } = useSearchParams();
-  const [user, setUser] = useState(null);
   const [books, setBooks] = useState<Array<BookType>>([]);
   const router = useRouter();
 
   const fetchUser = async () => {
-    const id = await BookService.getIdByUsername(username as string);
-    const books = await BookService.getUsersBooks(id);
+    const idData = await UserService.getUserByUsername(username as string);
+    const books = await BookService.getUsersBooks(idData?.id);
     books?.length && setBooks(books);
   };
 

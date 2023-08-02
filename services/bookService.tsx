@@ -335,15 +335,6 @@ const formatSingleBook = (book: ReturnBookType | null) => {
   return result;
 };
 
-const getIdByUsername = async (username: string) => {
-  const { data: userData, error } = await supabase
-    .from("users")
-    .select("id")
-    .eq("username", username)
-    .single();
-  return userData?.id;
-};
-
 const BookService = {
   addBook,
   getBooksByPublisher,
@@ -355,7 +346,6 @@ const BookService = {
   getUsersFavBooks,
   addBookToUserFavBooks,
   removeBookFromUserFavBooks,
-  getIdByUsername,
 };
 
 export default BookService;

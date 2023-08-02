@@ -17,18 +17,14 @@ import {
   setAuthorsFilter,
   setTypesFilter,
 } from "../redux/slicers/filterSlicer";
-import {
-  setFavBooks,
-  setUser,
-  setUserBooks,
-  setUserImageUrl,
-} from "../redux/slicers/userSlicer";
+import { setUser, setUserData } from "../redux/slicers/userSlicer";
 import BookService from "../services/bookService";
 import FilterService from "../services/filterService";
 import { supabase } from "../services/supabase";
+import UserService from "../services/userService";
 
 const Login = () => {
-  const [email, setEmail] = useState("saliherdem_kaymak@hotmail.com");
+  const [email, setEmail] = useState("saliherdem_kaymak1@hotmail.com");
   const [password, setPassword] = useState("123456");
   const [isBtnLoading, setIsBtnLoading] = useState(false);
   const [error, setError] = useState<String | null>(null);
@@ -79,12 +75,20 @@ const Login = () => {
       return;
     }
     if (data.user) {
+      const userBooks = await BookService.getUsersBooks(data.user.id);
+      const favBooks = await BookService.getUsersFavBooks(data.user.id);
+
       dispatch(setUser(data.user));
+      dispatch(
+        setUserData({
+          userBooks,
+          favBooks,
+        })
+      );
+
       dispatch(setBooks(await BookService.getBooks()));
-      dispatch(setUserBooks(await BookService.getUsersBooks(data.user.id)));
       dispatch(setTypesFilter(await FilterService.getAllTypeFilters()));
       dispatch(setAuthorsFilter(await FilterService.getAllAuthorFilters()));
-      dispatch(setFavBooks(await BookService.getUsersFavBooks(data.user.id)));
       return;
     }
     setError("Unexpected error");

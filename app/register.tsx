@@ -17,9 +17,9 @@ import { supabase } from "../services/supabase";
 
 const Register = () => {
   const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [email, setEmail] = useState("asd@gmail.com");
+  const [password, setPassword] = useState("123456");
+  const [confirmPassword, setConfirmPassword] = useState("123456");
 
   const [isBtnLoading, setIsBtnLoading] = useState(false);
   const [error, setError] = useState<String | null>(null);
@@ -100,7 +100,7 @@ const Register = () => {
       const { error } = await supabase
         .from("users")
         .insert({ id: data.user.id, username: username });
-
+      console.log(error);
       dispatch(setUser(data.user));
 
       return;

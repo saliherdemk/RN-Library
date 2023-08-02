@@ -1,8 +1,7 @@
-import { Fontisto, MaterialIcons } from "@expo/vector-icons";
+import { Fontisto, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
-  Button,
   FlatList,
   Image,
   Pressable,
@@ -11,39 +10,47 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import Settings from "../../../components/settings";
 import { COVER_URL_PREFIX } from "../../../helper/coverUrlPrefix";
-import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { removeUser } from "../../../redux/slicers/userSlicer";
-import { supabase } from "../../../services/supabase";
-import { Ionicons } from "@expo/vector-icons";
+import { useAppSelector } from "../../../redux/hooks";
+import UserService from "../../../services/userService";
 
 const Account = () => {
   const user = useAppSelector((state) => state.userData.user);
-  const favBooks = useAppSelector((state) => state.userData.favBooks);
-  const books = useAppSelector((state) => state.userData.userBooks);
+  const userData = useAppSelector((state) => state.userData.data);
+  const favBooks = userData.favBooks;
+  const books = userData.userBooks;
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const [shownBooks, setShownBooks] = useState(books);
   const [switchToFav, setSwitchToFav] = useState(false);
-
-  const dispatch = useAppDispatch();
+  const [userRole, setUserRole] = useState<{ name: string; vis: Number }>({
+    name: "user",
+    vis: 1,
+  });
 
   const router = useRouter();
+
+  const fetchRole = async () => {
+    const data = await UserService.getUserByUsername(
+      user?.user_metadata.username
+    );
+    //@ts-expect-error
+    data?.role && setUserRole(data?.role);
+  };
+  useEffect(() => {
+    fetchRole();
+  });
 
   useEffect(() => {
     setShownBooks(switchToFav ? favBooks : books);
   }, [switchToFav, favBooks]);
 
-  const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    dispatch(removeUser(""));
-  };
-
   return (
     <SafeAreaView className="flex-1">
       <View className="flex-1 bg-white items-center pt-12">
-        <View className="w-full">
-          <Text className="text-xl font-semibold my-1 px-20 text-center">
+        <View className="w-full px-10">
+          <Text className="text-xl font-semibold my-1  text-center">
             {(user?.user_metadata.username).toUpperCase()}
           </Text>
           <TouchableOpacity
@@ -111,22 +118,10 @@ const Account = () => {
         )}
       </View>
       {isSettingsOpen && (
-        <View className="absolute w-full h-full bg-black-rgba flex-1 items-center justify-center">
-          <View className="bg-white w-5/6 rounded-lg my-6 flex">
-            <TouchableOpacity
-              onPress={signOut}
-              className="border-t-2 p-4 border-gray-500"
-            >
-              <Text className="text-center">Sign Out</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setIsSettingsOpen(false)}
-              className="border-t-2 p-4  border-gray-200"
-            >
-              <Text className="text-center">Cancel</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+        <Settings
+          roleVis={Number(userRole.vis)}
+          setIsSettingsOpen={setIsSettingsOpen}
+        />
       )}
     </SafeAreaView>
   );

@@ -7,16 +7,18 @@ import { BookType } from "../../types/bookTypes";
 // https://github.com/orgs/supabase/discussions/2222
 export interface userState {
   user: User | null;
-  userBooks: Array<BookType>;
-  userImageUrl: string | null;
-  favBooks: Array<BookType>;
+  data: {
+    userBooks: Array<BookType>;
+    favBooks: Array<BookType>;
+  };
 }
 
 const initialState: userState = {
   user: null,
-  userBooks: [],
-  userImageUrl: null,
-  favBooks: [],
+  data: {
+    userBooks: [],
+    favBooks: [],
+  },
 };
 
 export const userSlice = createSlice({
@@ -27,19 +29,20 @@ export const userSlice = createSlice({
       state.user = action.payload;
     },
 
-    setUserImageUrl: (state, action: PayloadAction<string | null>) => {
-      state.userImageUrl = action.payload;
+    setUserData: (state, action) => {
+      state.data = action.payload;
     },
 
-    setUserBooks: (state, action) => {
-      state.userBooks = action.payload;
-    },
     addBookToUserBooks: (state, action) => {
-      state.userBooks = [action.payload, ...state.userBooks];
+      state.data = {
+        ...state.data,
+        userBooks: [action.payload, ...state.data.userBooks],
+      };
     },
+
     editBookFromUserBooks: (state, action) => {
       const updatedBook = action.payload;
-      state.userBooks = state.userBooks?.map((book) =>
+      const newUserBooks = state.data.userBooks?.map((book) =>
         book.isbn === updatedBook.isbn
           ? {
               ...updatedBook,
@@ -49,47 +52,48 @@ export const userSlice = createSlice({
             }
           : book
       );
-    },
-    removeBookFromUserBooks: (state, action) => {
-      state.userBooks = state.userBooks.filter(
-        (book) => book.isbn !== action.payload
-      );
+
+      state.data = { ...state.data, userBooks: newUserBooks };
     },
 
-    setFavBooks: (state, action) => {
-      state.favBooks = action.payload;
+    removeBookFromUserBooks: (state, action) => {
+      const newUserBooks = state.data.userBooks.filter(
+        (book) => book.isbn !== action.payload
+      );
+
+      state.data = { ...state.data, userBooks: newUserBooks };
     },
 
     addBookToFavBooks: (state, action) => {
-      if (!state.favBooks.some((f) => f.isbn == action.payload.isbn)) {
-        state.favBooks = [action.payload, ...state.favBooks];
-      }
+      state.data = {
+        ...state.data,
+        favBooks: [action.payload, ...state.data.favBooks],
+      };
     },
+
     removeBookFromFavBooks: (state, action) => {
-      state.favBooks = state.favBooks.filter(
+      const newUserBooks = state.data.favBooks.filter(
         (book) => book.isbn !== action.payload
       );
+
+      state.data = { ...state.data, favBooks: newUserBooks };
     },
     removeUser: (state, _) => {
       state.user = null;
-      state.userBooks = [];
-      state.userImageUrl = null;
-      state.favBooks = [];
+      state.data = initialState.data;
     },
   },
 });
 
 export const {
   setUser,
-  setUserImageUrl,
-  setUserBooks,
   addBookToUserBooks,
   editBookFromUserBooks,
   removeBookFromUserBooks,
-  setFavBooks,
   addBookToFavBooks,
   removeBookFromFavBooks,
   removeUser,
+  setUserData,
 } = userSlice.actions;
 
 export default userSlice.reducer;

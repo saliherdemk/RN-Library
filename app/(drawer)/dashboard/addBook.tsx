@@ -69,7 +69,9 @@ const AddBook = () => {
   const handleSubmit = async () => {
     setIsBtnLoading(true);
     if (checkErrors()) return;
-    var updatedFile = coverFile? {...coverFile, name: isbn + Date.now()} : null
+    var updatedFile = coverFile
+      ? { ...coverFile, name: isbn + Date.now() }
+      : null;
     const response = await BookService.addBook(
       isbn,
       user?.id,
@@ -106,90 +108,81 @@ const AddBook = () => {
 
   return (
     <>
-    <ScrollView>
-      <SafeAreaView className="flex-1 pt-[5%] items-center px-8 gap-3">
-        <TouchableOpacity
-          className="rounded overflow-hidden w-40 h-40 bg-white shadow "
-          onPress={pickImage}
-        >
-          {
-            <Image
-              source={{
-                uri: coverFile
-                  ? coverFile.uri
-                  : COVER_URL_PREFIX + "placeholder",
-              }}
-              className="w-full h-full"
-              resizeMode="cover"
+      <ScrollView>
+        <SafeAreaView className="flex-1 pt-[5%] items-center px-8 gap-3">
+          <TouchableOpacity
+            className="rounded overflow-hidden w-40 h-40 bg-white shadow "
+            onPress={pickImage}
+          >
+            {
+              <Image
+                source={{
+                  uri: coverFile
+                    ? coverFile.uri
+                    : COVER_URL_PREFIX + "placeholder",
+                }}
+                className="w-full h-full"
+                resizeMode="cover"
+              />
+            }
+          </TouchableOpacity>
+          {error && <Text className="text-rose-500">{error}</Text>}
+
+          <View className="w-full ">
+            <Text className="text-lg">Title</Text>
+            <TextInput
+              className="w-full bg-white h-12 p-2.5 text-black mt-2.5 border border-gray-200 rounded focus:border-sky-300"
+              placeholderTextColor="#808080"
+              value={title}
+              onChangeText={(title) => setTitle(title)}
             />
-          }
-        </TouchableOpacity>
-        {error && <Text className="text-rose-500">{error}</Text>}
+          </View>
 
-        <View className="w-full ">
-          <Text className="text-lg">Title</Text>
-          <TextInput
-            className="w-full bg-white h-12 p-2.5 text-black mt-2.5 border border-gray-200 rounded focus:border-sky-300"
-            placeholderTextColor="#808080"
-            value={title}
-            onChangeText={(title) => setTitle(title)}
-          />
-        </View>
+          <View className="w-full ">
+            <Text className="text-lg">ISBN</Text>
+            <TextInput
+              className="w-full bg-white h-12 p-2.5 text-black mt-2.5 border border-gray-200 rounded focus:border-sky-300"
+              placeholderTextColor="#808080"
+              value={isbn}
+              onChangeText={(isbn) => setIsbn(isbn)}
+            />
+          </View>
 
-        <View className="w-full ">
-          <Text className="text-lg">ISBN</Text>
-          <TextInput
-            className="w-full bg-white h-12 p-2.5 text-black mt-2.5 border border-gray-200 rounded focus:border-sky-300"
-            placeholderTextColor="#808080"
-            value={isbn}
-            onChangeText={(isbn) => setIsbn(isbn)}
-          />
-        </View>
+          <View className="w-full ">
+            <Text className="text-lg">Type</Text>
+            <TextInput
+              className="w-full bg-white h-12 p-2.5 text-black mt-2.5 border border-gray-200 rounded focus:border-sky-300"
+              placeholderTextColor="#808080"
+              value={type}
+              onChangeText={(type) => setType(type)}
+            />
+          </View>
 
-        <View className="w-full ">
-          <Text className="text-lg">Type</Text>
-          <TextInput
-            className="w-full bg-white h-12 p-2.5 text-black mt-2.5 border border-gray-200 rounded focus:border-sky-300"
-            placeholderTextColor="#808080"
-            value={type}
-            onChangeText={(type) => setType(type)}
-          />
-        </View>
+          <View className="w-full ">
+            <Text className="text-lg">Author(s)</Text>
+            <TextInput
+              className="w-full bg-white h-12 p-2.5 text-black mt-2.5 border border-gray-200 rounded focus:border-sky-300"
+              placeholderTextColor="#808080"
+              placeholder="Author1 - Author2 - Author3 "
+              value={authors}
+              onChangeText={(authors) => setAuthors(authors)}
+            />
+          </View>
 
-        <View className="w-full ">
-          <Text className="text-lg">Author(s)</Text>
-          <TextInput
-            className="w-full bg-white h-12 p-2.5 text-black mt-2.5 border border-gray-200 rounded focus:border-sky-300"
-            placeholderTextColor="#808080"
-            placeholder="Author1 - Author2 - Author3 "
-            value={authors}
-            onChangeText={(authors) => setAuthors(authors)}
-          />
-        </View>
-
-        <TouchableOpacity
-          onPress={handleSubmit}
-          className="w-full bg-green-500 rounded py-2"
-        >
-          {isBtnLoading ? (
-            <ActivityIndicator className="h-6" color="#f2f2f2" size={30} />
-          ) : (
-            <Text className="text-center text-white font-semibold text-base">
-              Add
-            </Text>
-          )}
-        </TouchableOpacity>
-        {/* <Pressable
-          onPress={() => {
-            router.back();
-          }}
-          className="w-full bg-rose-500 rounded py-2 "
-        >
-          <Text className="text-center text-white font-semibold text-base">
-            Cancel
-          </Text>
-        </Pressable> */}
-      </SafeAreaView></ScrollView>
+          <TouchableOpacity
+            onPress={handleSubmit}
+            className="w-full bg-green-500 rounded py-2"
+          >
+            {isBtnLoading ? (
+              <ActivityIndicator className="h-6" color="#f2f2f2" size={30} />
+            ) : (
+              <Text className="text-center text-white font-semibold text-base">
+                Add
+              </Text>
+            )}
+          </TouchableOpacity>
+        </SafeAreaView>
+      </ScrollView>
     </>
   );
 };

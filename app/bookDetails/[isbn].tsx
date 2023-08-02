@@ -18,7 +18,7 @@ import {
 const BookDetails = () => {
   const { isbn } = useSearchParams();
   const [book, setBook] = useState<BookType | null>(null);
-  const favBooks = useAppSelector((state) => state.userData.favBooks);
+  const favBooks = useAppSelector((state) => state.userData.data.favBooks);
   const user = useAppSelector((state) => state.userData.user);
   const [isFavorite, setIsFavorite] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

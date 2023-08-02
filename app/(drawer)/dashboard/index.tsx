@@ -14,7 +14,7 @@ import { BookType } from "../../../types/bookTypes";
 import { FlatList } from "react-native";
 
 const Dashboard = () => {
-  const books = useAppSelector((state) => state.userData.userBooks);
+  const books = useAppSelector((state) => state.userData.data.userBooks);
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -82,36 +82,7 @@ const Dashboard = () => {
         )}
         keyExtractor={(item) => item.isbn}
       />
-      <ScrollView className="px-5 flex-1">
-        {books &&
-          books.map((book: BookType) => (
-            <View key={book.isbn} className="pb-2">
-              <BookComponent book={book} />
-              <View className="flex flex-row w-full justify-center ">
-                <TouchableOpacity
-                  onPress={() => {
-                    handleDeletion(book.isbn, book.cover_url_suffix);
-                  }}
-                  className="flex-1 bg-rose-500 rounded-bl py-2"
-                >
-                  <Text className="text-center text-white font-semibold text-base">
-                    Delete
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    handleEdit(book.isbn);
-                  }}
-                  className="flex-1 bg-blue-500 rounded-br py-2"
-                >
-                  <Text className="text-center text-white font-semibold text-base">
-                    Edit
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          ))}
-      </ScrollView>
+
       <AntDesign
         onPress={() => {
           router.push("/dashboard/addBook");
