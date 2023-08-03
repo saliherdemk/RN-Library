@@ -1,14 +1,15 @@
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, Text, TouchableOpacity } from "react-native";
 import BookComponent from "../../../components/BookComponent";
 import Container from "../../../components/Container";
-import FilterExpandable from "../../../components/FilterExpandable";
-import Header from "../../../components/Header";
 import Loading from "../../../components/Loading";
 import ShowActiveSortFilter from "../../../components/ShowActiveSortFilter";
+import FilterExpandable from "../../../components/filtersComponent/FilterExpandable";
+import Header from "../../../components/headers/Header";
 import { useAppSelector } from "../../../redux/hooks";
 import { BookType } from "../../../types/bookTypes";
+import NoBooks from "../../../components/NoBooks";
 
 const Books = () => {
   const books = useAppSelector((state) => state.bookData.books);
@@ -68,7 +69,7 @@ const Books = () => {
               data={shownBooks}
               className="px-3"
               renderItem={renderItem}
-              ListEmptyComponent={() => <Text>No upcoming trips to show.</Text>}
+              ListEmptyComponent={() => <NoBooks text="There is no books" />}
               keyExtractor={keyExtractor}
               getItemLayout={getItemLayout}
             />

@@ -1,10 +1,12 @@
 import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Alert, FlatList, Text, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Alert, FlatList, TouchableOpacity, View } from "react-native";
 import { useDispatch } from "react-redux";
 import BookComponent from "../../../components/BookComponent";
+import Button from "../../../components/Button";
+import Loading from "../../../components/Loading";
+import Header from "../../../components/headers/Header";
 import { useAppSelector } from "../../../redux/hooks";
 import { removeBookFromBooks } from "../../../redux/slicers/bookSlicer";
 import {
@@ -13,9 +15,12 @@ import {
 } from "../../../redux/slicers/userSlicer";
 import BookService from "../../../services/bookService";
 import { BookType } from "../../../types/bookTypes";
-import Loading from "../../../components/Loading";
-import Header from "../../../components/Header";
-import Button from "../../../components/Button";
+import {
+  setAuthorsFilter,
+  setTypesFilter,
+} from "../../../redux/slicers/filterSlicer";
+import FilterService from "../../../services/filterService";
+import NoBooks from "../../../components/NoBooks";
 
 const Dashboard = () => {
   const books = useAppSelector((state) => state.userData.data.userBooks);
@@ -67,11 +72,21 @@ const Dashboard = () => {
       {
         text: "OK",
         onPress: async () => {
-          const err = await BookService.deleteBook(isbn, cover_url_suffix);
-          if (!err) {
+          const result = await BookService.deleteBook(isbn, cover_url_suffix);
+          if (!result.err) {
             dispatch(removeBookFromBooks(isbn));
             dispatch(removeBookFromUserBooks(isbn));
             dispatch(removeBookFromFavBooks(isbn));
+          }
+
+          if (result?.type_needs_update) {
+            dispatch(setTypesFilter(await FilterService.getAllTypeFilters()));
+          }
+
+          if (result?.author_needs_update) {
+            dispatch(
+              setAuthorsFilter(await FilterService.getAllAuthorFilters())
+            );
           }
         },
       },
@@ -98,6 +113,9 @@ const Dashboard = () => {
               className="px-3"
               renderItem={renderItem}
               keyExtractor={keyExtractor}
+              ListEmptyComponent={() => (
+                <NoBooks text="You don't have any published book yet" />
+              )}
             />
           </View>
 

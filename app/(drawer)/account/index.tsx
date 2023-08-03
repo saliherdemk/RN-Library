@@ -1,15 +1,15 @@
 import { Fontisto, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import Container from "../../../components/Container";
 import Loading from "../../../components/Loading";
-import AccountHeaderContainer from "../../../components/AccountHeaderContainer";
 import ProfileBookComponent from "../../../components/ProfileBookComponent";
-import Settings from "../../../components/settings";
-import SwitchMenu from "../../../components/switchMenu";
+import Settings from "../../../components/Settings";
+import SwitchMenu from "../../../components/SwitchMenu";
+import AccountHeaderContainer from "../../../components/headers/AccountHeaderContainer";
 import { useAppSelector } from "../../../redux/hooks";
 import UserService from "../../../services/userService";
 import { BookType } from "../../../types/bookTypes";
-import Container from "../../../components/Container";
 
 const Account = () => {
   const user = useAppSelector((state) => state.userData.user);

@@ -1,14 +1,8 @@
 import * as DocumentPicker from "expo-document-picker";
 import { Stack, useRouter } from "expo-router";
 import React, { useState } from "react";
-import {
-  ActivityIndicator,
-  Alert,
-  Image,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-} from "react-native";
+import { Alert, Image, ScrollView, Text, TouchableOpacity } from "react-native";
+import Button from "../../../components/Button";
 import Container from "../../../components/Container";
 import FormTextInput from "../../../components/FormTextInput";
 import { COVER_URL_PREFIX } from "../../../helper/coverUrlPrefix";
@@ -23,7 +17,7 @@ import { addBookToUserBooks } from "../../../redux/slicers/userSlicer";
 import BookService from "../../../services/bookService";
 import FilterService from "../../../services/filterService";
 import { ImageFileType } from "../../../types/bookTypes";
-import Button from "../../../components/Button";
+import { supabase } from "../../../services/supabase";
 
 const AddBook = () => {
   const [title, setTitle] = useState("asd");
@@ -71,28 +65,30 @@ const AddBook = () => {
     var updatedFile = coverFile
       ? { ...coverFile, name: isbn + Date.now() }
       : null;
+
     const response = await BookService.addBook(
       isbn,
       user?.id,
       trimString(type),
       title,
       updatedFile,
-      trimString(authors)
+      trimString(authors).split("-")
     );
-    if (response?.err) {
+    if (response?.err || !response.data) {
       setError(response.err);
       setIsBtnLoading(false);
       return;
     }
 
     dispatch(addBookToUserBooks(response.data));
+
     dispatch(addBookToBooks(response.data));
 
-    if (response.typeNeedsUpdate) {
+    if (response.data?.typeNeedsUpdate) {
       dispatch(setTypesFilter(await FilterService.getAllTypeFilters()));
     }
 
-    if (response.authorNeedsUpdate) {
+    if (response.data?.authorNeedsUpdate) {
       dispatch(setAuthorsFilter(await FilterService.getAllAuthorFilters()));
     }
 
@@ -102,6 +98,7 @@ const AddBook = () => {
       [{ text: "Okay", onPress: () => router.back() }],
       { cancelable: false }
     );
+
     setIsBtnLoading(false);
   };
 

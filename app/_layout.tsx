@@ -1,5 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useEffect, useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
 import { useAppSelector } from "../redux/hooks";
 import { store } from "../redux/store";
@@ -10,7 +11,6 @@ import BookDetailsLayout from "./bookDetails/_layout";
 import Login from "./login";
 import ProfileLayout from "./profile/_layout";
 import Register from "./register";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 function Layout() {
   const user = useAppSelector((state) => state.userData.user);

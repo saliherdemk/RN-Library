@@ -6,8 +6,8 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
-import FilterSection from "./filtersComponent/FilterSection";
-import SortSection from "./filtersComponent/SortSection";
+import FilterSection from "./FilterSection";
+import SortSection from "./SortSection";
 
 const FilterExpandable = () => {
   const [collapsed, setCollapsed] = useState(true);

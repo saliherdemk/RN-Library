@@ -16,7 +16,7 @@ export interface ReturnBookType {
   users: {
     username: any;
   }[];
-  AuthorBook: {
+  authorbook: {
     author: any;
   }[];
 }

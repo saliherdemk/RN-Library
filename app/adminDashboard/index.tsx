@@ -4,9 +4,9 @@ import React, { useEffect, useState } from "react";
 import { FlatList } from "react-native";
 import Container from "../../components/Container";
 import Loading from "../../components/Loading";
+import SwitchMenu from "../../components/SwitchMenu";
 import BookContainer from "../../components/admin/bookContainer";
 import UserContainer from "../../components/admin/userContainer";
-import SwitchMenu from "../../components/switchMenu";
 import { useAppSelector } from "../../redux/hooks";
 import UserService from "../../services/userService";
 

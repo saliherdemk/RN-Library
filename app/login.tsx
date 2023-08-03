@@ -1,14 +1,9 @@
 import { useRouter } from "expo-router";
-import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
-import {
-  ActivityIndicator,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Text, TouchableOpacity, View } from "react-native";
+import Button from "../components/Button";
+import Container from "../components/Container";
+import FormTextInput from "../components/FormTextInput";
 import Logo from "../components/Logo";
 import { isEmailValid } from "../helper/validateEmail";
 import { useAppDispatch } from "../redux/hooks";
@@ -21,9 +16,6 @@ import { setUser, setUserData } from "../redux/slicers/userSlicer";
 import BookService from "../services/bookService";
 import FilterService from "../services/filterService";
 import { supabase } from "../services/supabase";
-import FormTextInput from "../components/FormTextInput";
-import Container from "../components/Container";
-import Button from "../components/Button";
 
 const Login = () => {
   const [email, setEmail] = useState("asffjd@gmail.com");

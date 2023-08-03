@@ -2,15 +2,12 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
 import { useSearchParams } from "expo-router/src/LocationProvider";
 import React, { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  Image,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Text, TouchableOpacity, View } from "react-native";
 import { useDispatch } from "react-redux";
+import Container from "../../components/Container";
+import ImageContainer from "../../components/ImageContainer";
+import Loading from "../../components/Loading";
+import Header from "../../components/headers/Header";
 import { COVER_URL_PREFIX } from "../../helper/coverUrlPrefix";
 import { formatDate } from "../../helper/formatDate";
 import { useAppSelector } from "../../redux/hooks";
@@ -20,10 +17,6 @@ import {
 } from "../../redux/slicers/userSlicer";
 import BookService from "../../services/bookService";
 import { BookType } from "../../types/bookTypes";
-import Loading from "../../components/Loading";
-import Container from "../../components/Container";
-import ImageContainer from "../../components/ImageContainer";
-import Header from "../../components/Header";
 
 const BookDetails = () => {
   const { isbn } = useSearchParams();

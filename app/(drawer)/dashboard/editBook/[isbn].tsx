@@ -89,13 +89,14 @@ const EditBook = () => {
       dispatch(editBookFromUserBooks(Obj.data));
       dispatch(editBookFromBooks(Obj.data));
     }
-    if (Obj.typeNeedsUpdate) {
+    if (Obj.data?.typeNeedsUpdate) {
       dispatch(setTypesFilter(await FilterService.getAllTypeFilters()));
     }
 
-    if (Obj.authorNeedsUpdate) {
+    if (Obj.data?.authorNeedsUpdate) {
       dispatch(setAuthorsFilter(await FilterService.getAllAuthorFilters()));
     }
+
     Alert.alert(
       "Completed!",
       "Book edited successfully",
