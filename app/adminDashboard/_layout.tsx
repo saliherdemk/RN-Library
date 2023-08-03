@@ -9,7 +9,7 @@ export default function AdminDashboardLayout() {
       <Stack.Screen
         name="index"
         component={AdminDashboard}
-        options={{ headerTitle: "Admin Dashboard" }}
+        options={{ headerTitle: "" }}
       />
     </Stack.Navigator>
   );

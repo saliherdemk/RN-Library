@@ -14,6 +14,9 @@ import { isEmailValid } from "../helper/validateEmail";
 import { useAppDispatch } from "../redux/hooks";
 import { setUser } from "../redux/slicers/userSlicer";
 import { supabase } from "../services/supabase";
+import Container from "../components/Container";
+import FormTextInput from "../components/FormTextInput";
+import Button from "../components/Button";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -109,59 +112,46 @@ const Register = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 items-center justify-center ">
-      <StatusBar style="auto" />
-
+    <Container classList="justify-center items-center">
       <View className="w-5/6 px-8 py-5 flex bg-white rounded-md shadow items-center">
         <Logo />
         {error && <Text className="text-rose-500">{error}</Text>}
 
-        <TextInput
-          className="w-full h-12 p-2.5 text-black my-1.5 border border-gray-200 rounded focus:border-sky-300"
-          placeholder="Username"
-          placeholderTextColor="#003f5c"
+        <FormTextInput
+          label=""
           value={username}
-          onChangeText={(username) => setUsername(username)}
+          setValue={setUsername}
+          placeHolder="Username"
         />
 
-        <TextInput
-          className="w-full h-12 p-2.5 text-black my-1.5 border border-gray-200 rounded focus:border-sky-300"
-          placeholder="Email"
-          placeholderTextColor="#003f5c"
+        <FormTextInput
+          label=""
           value={email}
-          onChangeText={(email) => setEmail(email)}
-        />
-        <TextInput
-          className="w-full h-12 p-2.5 text-black my-1.5 border border-gray-200 rounded focus:border-sky-300"
-          placeholder="Password"
-          placeholderTextColor="#003f5c"
-          secureTextEntry={true}
-          value={password}
-          onChangeText={(password) => setPassword(password)}
-        />
-        <TextInput
-          className="w-full h-12 p-2.5 text-black my-1.5 border border-gray-200 rounded focus:border-sky-300"
-          placeholder="Confirm Password"
-          placeholderTextColor="#003f5c"
-          secureTextEntry={true}
-          value={confirmPassword}
-          onChangeText={(confirmPassword) =>
-            setConfirmPassword(confirmPassword)
-          }
+          setValue={setEmail}
+          placeHolder="Email"
+          keyboardType="email-address"
         />
 
-        <TouchableOpacity
+        <FormTextInput
+          label=""
+          value={password}
+          setValue={setPassword}
+          placeHolder="Password"
+          secureTextEntry={true}
+        />
+
+        <FormTextInput
+          label=""
+          value={confirmPassword}
+          setValue={setConfirmPassword}
+          placeHolder="Confirm Password"
+          secureTextEntry={true}
+        />
+        <Button
           onPress={handleRegister}
-          className="w-full bg-blue-500 rounded py-2 mt-2"
-        >
-          {isBtnLoading ? (
-            <ActivityIndicator className="h-6" color="#f2f2f2" size={30} />
-          ) : (
-            <Text className="text-center text-white font-semibold text-base">
-              Sign In
-            </Text>
-          )}
-        </TouchableOpacity>
+          title="Sign Up"
+          isLoading={isBtnLoading}
+        />
 
         <TouchableOpacity
           onPress={() => {
@@ -173,7 +163,7 @@ const Register = () => {
           <Text className="text-blue-500">Sign In</Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </Container>
   );
 };
 

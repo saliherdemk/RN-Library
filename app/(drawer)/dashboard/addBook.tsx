@@ -1,5 +1,5 @@
 import * as DocumentPicker from "expo-document-picker";
-import { useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
@@ -8,11 +8,11 @@ import {
   ScrollView,
   Text,
   TouchableOpacity,
-  View,
 } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
-import { SafeAreaView } from "react-native-safe-area-context";
+import Container from "../../../components/Container";
+import FormTextInput from "../../../components/FormTextInput";
 import { COVER_URL_PREFIX } from "../../../helper/coverUrlPrefix";
+import { trimString } from "../../../helper/trim";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { addBookToBooks } from "../../../redux/slicers/bookSlicer";
 import {
@@ -23,7 +23,7 @@ import { addBookToUserBooks } from "../../../redux/slicers/userSlicer";
 import BookService from "../../../services/bookService";
 import FilterService from "../../../services/filterService";
 import { ImageFileType } from "../../../types/bookTypes";
-import { trimString } from "../../../helper/trim";
+import Button from "../../../components/Button";
 
 const AddBook = () => {
   const [title, setTitle] = useState("asd");
@@ -107,8 +107,16 @@ const AddBook = () => {
 
   return (
     <>
-      <ScrollView>
-        <SafeAreaView className="flex-1 pt-[5%] items-center px-8 gap-3">
+      <ScrollView className="flex-1 px-8">
+        <Stack.Screen
+          options={{
+            headerTitle: "Add Book",
+            headerShown: true,
+            presentation: "modal",
+          }}
+        />
+
+        <Container classList="justify-center items-center pt-8">
           <TouchableOpacity
             className="rounded overflow-hidden w-40 h-40 bg-white shadow "
             onPress={pickImage}
@@ -125,62 +133,47 @@ const AddBook = () => {
               />
             }
           </TouchableOpacity>
-          {error && <Text className="text-rose-500">{error}</Text>}
+        </Container>
 
-          <View className="w-full ">
-            <Text className="text-lg">Title</Text>
-            <TextInput
-              className="w-full bg-white h-12 p-2.5 text-black mt-2.5 border border-gray-200 rounded focus:border-sky-300"
-              placeholderTextColor="#808080"
-              value={title}
-              onChangeText={(title) => setTitle(title)}
-            />
-          </View>
+        {error && <Text className="text-rose-500">{error}</Text>}
 
-          <View className="w-full ">
-            <Text className="text-lg">ISBN</Text>
-            <TextInput
-              className="w-full bg-white h-12 p-2.5 text-black mt-2.5 border border-gray-200 rounded focus:border-sky-300"
-              placeholderTextColor="#808080"
-              value={isbn}
-              onChangeText={(isbn) => setIsbn(isbn)}
-            />
-          </View>
+        <FormTextInput
+          label="Title"
+          value={title}
+          setValue={setTitle}
+          placeHolder=""
+          readOnly={false}
+        />
 
-          <View className="w-full ">
-            <Text className="text-lg">Type</Text>
-            <TextInput
-              className="w-full bg-white h-12 p-2.5 text-black mt-2.5 border border-gray-200 rounded focus:border-sky-300"
-              placeholderTextColor="#808080"
-              value={type}
-              onChangeText={(type) => setType(type)}
-            />
-          </View>
+        <FormTextInput
+          label="ISBN"
+          value={isbn as string}
+          setValue={setIsbn}
+          placeHolder=""
+          readOnly={false}
+        />
 
-          <View className="w-full ">
-            <Text className="text-lg">Author(s)</Text>
-            <TextInput
-              className="w-full bg-white h-12 p-2.5 text-black mt-2.5 border border-gray-200 rounded focus:border-sky-300"
-              placeholderTextColor="#808080"
-              placeholder="Author1 - Author2 - Author3 "
-              value={authors}
-              onChangeText={(authors) => setAuthors(authors)}
-            />
-          </View>
+        <FormTextInput
+          label="Type"
+          value={type}
+          setValue={setType}
+          placeHolder=""
+          readOnly={false}
+        />
+        <FormTextInput
+          label="Author(s)"
+          value={authors}
+          setValue={setAuthors}
+          placeHolder="Author1 - Author2 - Author3"
+          readOnly={false}
+        />
 
-          <TouchableOpacity
-            onPress={handleSubmit}
-            className="w-full bg-green-500 rounded py-2"
-          >
-            {isBtnLoading ? (
-              <ActivityIndicator className="h-6" color="#f2f2f2" size={30} />
-            ) : (
-              <Text className="text-center text-white font-semibold text-base">
-                Add
-              </Text>
-            )}
-          </TouchableOpacity>
-        </SafeAreaView>
+        <Button
+          title={"Add"}
+          isLoading={isBtnLoading}
+          onPress={handleSubmit}
+          classList="bg-green-500"
+        />
       </ScrollView>
     </>
   );

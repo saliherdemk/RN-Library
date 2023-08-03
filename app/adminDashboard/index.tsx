@@ -1,8 +1,12 @@
 import { AntDesign, Entypo } from "@expo/vector-icons";
+import { Stack } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { FlatList, Pressable, View } from "react-native";
+import { FlatList } from "react-native";
+import Container from "../../components/Container";
+import Loading from "../../components/Loading";
 import BookContainer from "../../components/admin/bookContainer";
 import UserContainer from "../../components/admin/userContainer";
+import SwitchMenu from "../../components/switchMenu";
 import { useAppSelector } from "../../redux/hooks";
 import UserService from "../../services/userService";
 
@@ -11,7 +15,7 @@ const AdminDashboard = () => {
     Array<{ created_at: string; id: string; role: Number; username: string }>
   >([]);
   const user = useAppSelector((state) => state.userData.user);
-
+  const [isLoading, setIsLoading] = useState(true);
   const books = useAppSelector((state) => state.bookData.books);
   const [showBooks, setShowBooks] = useState(true);
   const [userRole, setUserRole] = useState<{ name: string; vis: Number }>({
@@ -31,6 +35,7 @@ const AdminDashboard = () => {
     const usersData = await UserService.getUserByVis(userRole.vis);
 
     usersData && setUsers(usersData);
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -42,48 +47,56 @@ const AdminDashboard = () => {
   }, [user]);
 
   return (
-    <View className="flex-1">
-      <View className="flex-row px-3 pt-0 my-2">
-        <Pressable
-          disabled={Number(userRole.vis) < 3}
-          onPress={() => {
-            setShowBooks(false);
-          }}
-          className={` flex-1 items-center pt-2 ${
-            Number(userRole.vis) < 3 && "opacity-25"
-          }`}
-        >
-          <AntDesign name="addusergroup" size={24} color="black" />
-        </Pressable>
-        <Pressable
-          onPress={() => {
-            setShowBooks(true);
-          }}
-          className={` flex-1 items-center pt-2`}
-        >
-          <Entypo name="book" size={24} color="black" />
-        </Pressable>
-      </View>
-      <View className="flex-1">
-        {showBooks ? (
-          <FlatList
-            data={books}
-            className="px-3"
-            renderItem={({ item }) => <BookContainer book={item} />}
-            keyExtractor={(item) => item.isbn}
+    <>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <Container classList="p-4">
+          <Stack.Screen
+            options={{ headerTitle: userRole.name + " Dashboard" }}
           />
-        ) : (
-          <FlatList
-            data={users}
-            className="px-3"
-            renderItem={({ item }) => (
-              <UserContainer user={item} authRole={userRole.vis} />
+          <SwitchMenu
+            switchValue={showBooks}
+            setSwitchValue={setShowBooks}
+            iconLeft={
+              <AntDesign
+                name="addusergroup"
+                size={24}
+                color={!showBooks ? "black" : "gray"}
+              />
+            }
+            iconRight={
+              <Entypo
+                name="book"
+                size={24}
+                color={showBooks ? "black" : "gray"}
+              />
+            }
+            iconLeftDisabled={Number(userRole.vis) < 3}
+          />
+
+          <Container>
+            {showBooks ? (
+              <FlatList
+                data={books}
+                className="px-3"
+                renderItem={({ item }) => <BookContainer book={item} />}
+                keyExtractor={(item) => item.isbn}
+              />
+            ) : (
+              <FlatList
+                data={users}
+                className="px-3"
+                renderItem={({ item }) => (
+                  <UserContainer user={item} authRole={userRole.vis} />
+                )}
+                keyExtractor={(item) => item.id}
+              />
             )}
-            keyExtractor={(item) => item.id}
-          />
-        )}
-      </View>
-    </View>
+          </Container>
+        </Container>
+      )}
+    </>
   );
 };
 

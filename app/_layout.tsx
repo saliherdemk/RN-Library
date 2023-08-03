@@ -10,6 +10,7 @@ import BookDetailsLayout from "./bookDetails/_layout";
 import Login from "./login";
 import ProfileLayout from "./profile/_layout";
 import Register from "./register";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 function Layout() {
   const user = useAppSelector((state) => state.userData.user);
@@ -57,7 +58,9 @@ function Layout() {
 export default () => {
   return (
     <Provider store={store}>
-      <Layout />
+      <SafeAreaView className="flex-1 bg-gray-100">
+        <Layout />
+      </SafeAreaView>
     </Provider>
   );
 };

@@ -1,10 +1,10 @@
-import React from "react";
+import React, { memo } from "react";
 import { Image, Text, View } from "react-native";
 import { COVER_URL_PREFIX } from "../helper/coverUrlPrefix";
 import { formatDate } from "../helper/formatDate";
 import { BookType } from "../types/bookTypes";
 
-const BookComponent = ({ book }: { book: BookType }) => {
+export default memo(function BookComponent({ book }: { book: BookType }) {
   return (
     <View className="w-full my-4 flex items-center bg-white shadow rounded-lg ">
       <View className="w-28 h-28 rounded overflow-hidden mt-8 ">
@@ -42,6 +42,4 @@ const BookComponent = ({ book }: { book: BookType }) => {
       </Text>
     </View>
   );
-};
-
-export default BookComponent;
+});

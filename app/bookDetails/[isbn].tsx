@@ -20,6 +20,10 @@ import {
 } from "../../redux/slicers/userSlicer";
 import BookService from "../../services/bookService";
 import { BookType } from "../../types/bookTypes";
+import Loading from "../../components/Loading";
+import Container from "../../components/Container";
+import ImageContainer from "../../components/ImageContainer";
+import Header from "../../components/Header";
 
 const BookDetails = () => {
   const { isbn } = useSearchParams();
@@ -89,7 +93,7 @@ const BookDetails = () => {
   }, [isbn]);
 
   return (
-    <SafeAreaView className="flex-1">
+    <Container>
       <Stack.Screen
         options={{
           headerTitle: isbn as string,
@@ -98,22 +102,14 @@ const BookDetails = () => {
         }}
       />
       {isLoading ? (
-        <View className="w-full h-full justify-center">
-          <ActivityIndicator size={36} />
-        </View>
+        <Loading />
       ) : (
         <>
-          {book && (
+          {!book ? (
+            <Text>This book might be deleted</Text>
+          ) : (
             <View className="flex-1 items-center px-8">
-              <View className="w-28 h-28">
-                <Image
-                  source={{
-                    uri: COVER_URL_PREFIX + book.cover_url_suffix,
-                  }}
-                  className="w-full h-full  rounded"
-                  resizeMode="cover"
-                />
-              </View>
+              <ImageContainer uri={COVER_URL_PREFIX + book.cover_url_suffix} />
               <Text className="text-xl font-semibold my-1">{book.title}</Text>
               <Text className="text-md text-gray-600 ">{book.type}</Text>
               <TouchableOpacity onPress={toggleFavorite}>
@@ -124,9 +120,10 @@ const BookDetails = () => {
                 )}
               </TouchableOpacity>
               <View className="w-full bg-white p-5 pt-2 mt-2 rounded-lg">
-                <Text className="text-center text-xl border-gray-400 border-b-2">
-                  Author(s)
-                </Text>
+                <Header
+                  title="Author(s)"
+                  classList=" text-xl border-gray-400"
+                />
                 <View className="flex-row flex-wrap gap-4 pt-2">
                   {book.authors?.map((author: string, index: number) => (
                     <Text key={author} className="p-2">
@@ -154,7 +151,7 @@ const BookDetails = () => {
           )}
         </>
       )}
-    </SafeAreaView>
+    </Container>
   );
 };
 

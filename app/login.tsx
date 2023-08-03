@@ -21,6 +21,9 @@ import { setUser, setUserData } from "../redux/slicers/userSlicer";
 import BookService from "../services/bookService";
 import FilterService from "../services/filterService";
 import { supabase } from "../services/supabase";
+import FormTextInput from "../components/FormTextInput";
+import Container from "../components/Container";
+import Button from "../components/Button";
 
 const Login = () => {
   const [email, setEmail] = useState("asffjd@gmail.com");
@@ -95,44 +98,34 @@ const Login = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 items-center justify-center ">
-      <StatusBar style="auto" />
-
+    <Container classList="justify-center items-center">
       <View className="w-5/6 px-8 py-5 flex bg-white rounded-md shadow items-center">
         <Logo />
         {error && <Text className="text-rose-500">{error}</Text>}
-        <TextInput
-          keyboardType="email-address"
-          className="w-full h-12 p-2.5 text-black mt-2.5 border border-gray-200 rounded focus:border-sky-300"
-          placeholder="Email"
-          placeholderTextColor="#808080"
+        <FormTextInput
+          label=""
           value={email}
-          onChangeText={(email) => setEmail(email)}
+          setValue={setEmail}
+          placeHolder="Email"
+          keyboardType="email-address"
         />
-        <TextInput
-          className="w-full h-12 p-2.5 text-black mt-2.5 border border-gray-200 rounded focus:border-sky-300"
-          placeholder="Password"
-          placeholderTextColor="#808080"
-          secureTextEntry={true}
+
+        <FormTextInput
+          label=""
           value={password}
-          onChangeText={(password) => setPassword(password)}
+          setValue={setPassword}
+          placeHolder="Password"
+          secureTextEntry={true}
         />
-        <TouchableOpacity className="w-full my-3">
+        <TouchableOpacity className="w-full mb-2">
           <Text className="text-right text-blue-500">Forgot Password?</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
+        <Button
           onPress={handleLogIn}
-          className="w-full bg-blue-500 rounded py-2"
-        >
-          {isBtnLoading ? (
-            <ActivityIndicator className="h-6" color="#f2f2f2" size={30} />
-          ) : (
-            <Text className="text-center text-white font-semibold text-base">
-              Sign In
-            </Text>
-          )}
-        </TouchableOpacity>
+          title="Sign In"
+          isLoading={isBtnLoading}
+        />
 
         <TouchableOpacity
           onPress={() => {
@@ -144,7 +137,7 @@ const Login = () => {
           <Text className="text-blue-500">Sign Up</Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </Container>
   );
 };
 
