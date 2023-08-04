@@ -114,7 +114,7 @@ const Dashboard = () => {
               renderItem={renderItem}
               keyExtractor={keyExtractor}
               ListEmptyComponent={() => (
-                <NoBooks text="You don't have any published book yet" />
+                <NoBooks text="You Haven't Published Any Books Yet" />
               )}
             />
           </View>

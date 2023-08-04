@@ -12,7 +12,7 @@ import SortSection from "./SortSection";
 const FilterExpandable = () => {
   const [collapsed, setCollapsed] = useState(true);
 
-  const [maxHeight, setMaxHeight] = useState(30);
+  const [maxHeight, setMaxHeight] = useState(35);
 
   const [isFilterShown, setIsFilterShown] = useState(true);
 
@@ -35,7 +35,7 @@ const FilterExpandable = () => {
               setMaxHeight(600);
               return;
             }
-            setMaxHeight(30);
+            setMaxHeight(35);
           }}
           className="bg-white rounded-lg border-2"
         >

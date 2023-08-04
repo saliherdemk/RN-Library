@@ -1,11 +1,21 @@
 import { View, Text } from "react-native";
-import React from "react";
-import { FontAwesome } from "@expo/vector-icons";
+import React, { ReactNode } from "react";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Container from "./Container";
-export default function NoBooks({ text }: { text: string }) {
+
+interface NoBooksProps {
+  text: string;
+  icon?: ReactNode;
+}
+
+export default function NoBooks({ text, icon }: NoBooksProps) {
   return (
     <Container classList="items-center">
-      <FontAwesome name="book" size={100} color="black" />
+      {icon ? (
+        icon
+      ) : (
+        <MaterialCommunityIcons name="bookshelf" size={100} color="black" />
+      )}
       <Text className="text-lg text-center">{text}</Text>
     </Container>
   );

@@ -69,7 +69,7 @@ const Books = () => {
               data={shownBooks}
               className="px-3"
               renderItem={renderItem}
-              ListEmptyComponent={() => <NoBooks text="There is no books" />}
+              ListEmptyComponent={() => <NoBooks text="No Results Found" />}
               keyExtractor={keyExtractor}
               getItemLayout={getItemLayout}
             />

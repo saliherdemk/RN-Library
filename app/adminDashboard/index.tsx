@@ -9,6 +9,8 @@ import BookContainer from "../../components/admin/bookContainer";
 import UserContainer from "../../components/admin/userContainer";
 import { useAppSelector } from "../../redux/hooks";
 import UserService from "../../services/userService";
+import NoBooks from "../../components/NoBooks";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState<
@@ -22,6 +24,12 @@ const AdminDashboard = () => {
     name: "user",
     vis: 1,
   });
+
+  const updateUser = (username: string, newRole: Number) => {
+    setUsers((curr) =>
+      curr.map((u) => (u.username == username ? { ...u, role: newRole } : u))
+    );
+  };
 
   const fetchRole = async () => {
     const data = await UserService.getUserByUsername(
@@ -43,6 +51,7 @@ const AdminDashboard = () => {
   }, [userRole]);
 
   useEffect(() => {
+    setIsLoading(true);
     fetchRole();
   }, [user]);
 
@@ -82,13 +91,30 @@ const AdminDashboard = () => {
                 className="px-3"
                 renderItem={({ item }) => <BookContainer book={item} />}
                 keyExtractor={(item) => item.isbn}
+                ListEmptyComponent={() => <NoBooks text="There is no books" />}
               />
             ) : (
               <FlatList
                 data={users}
                 className="px-3"
                 renderItem={({ item }) => (
-                  <UserContainer user={item} authRole={userRole.vis} />
+                  <UserContainer
+                    user={item}
+                    authRole={userRole.vis}
+                    updateUser={updateUser}
+                  />
+                )}
+                ListEmptyComponent={() => (
+                  <NoBooks
+                    text="There is no user that you can edit"
+                    icon={
+                      <MaterialCommunityIcons
+                        name="account-off"
+                        size={100}
+                        color="black"
+                      />
+                    }
+                  />
                 )}
                 keyExtractor={(item) => item.id}
               />

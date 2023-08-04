@@ -10,6 +10,7 @@ import AccountHeaderContainer from "../../../components/headers/AccountHeaderCon
 import { useAppSelector } from "../../../redux/hooks";
 import UserService from "../../../services/userService";
 import { BookType } from "../../../types/bookTypes";
+import NoBooks from "../../../components/NoBooks";
 
 const Account = () => {
   const user = useAppSelector((state) => state.userData.user);
@@ -88,15 +89,27 @@ const Account = () => {
                 />
               }
             />
-            {shownBooks.length > 0 && (
-              <FlatList
-                data={shownBooks}
-                numColumns={3}
-                className="w-full"
-                renderItem={renderItem}
-                keyExtractor={keyExtractor}
-              />
-            )}
+            <FlatList
+              data={shownBooks}
+              numColumns={3}
+              className="w-full"
+              renderItem={renderItem}
+              keyExtractor={keyExtractor}
+              ListEmptyComponent={() => (
+                <NoBooks
+                  text={
+                    !switchToFav
+                      ? "You Haven't Published Any Books Yet"
+                      : "No Saved Books Yet"
+                  }
+                  icon={
+                    switchToFav && (
+                      <Ionicons name="md-book" size={100} color="black" />
+                    )
+                  }
+                />
+              )}
+            />
           </Container>
           {isSettingsOpen && (
             <Settings
