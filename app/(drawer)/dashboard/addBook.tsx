@@ -17,7 +17,7 @@ import { addBookToUserBooks } from "../../../redux/slicers/userSlicer";
 import BookService from "../../../services/bookService";
 import FilterService from "../../../services/filterService";
 import { ImageFileType } from "../../../types/bookTypes";
-import { supabase } from "../../../services/supabase";
+import ShowError from "../../../components/ShowError";
 
 const AddBook = () => {
   const [title, setTitle] = useState("asd");
@@ -132,7 +132,7 @@ const AddBook = () => {
           </TouchableOpacity>
         </Container>
 
-        {error && <Text className="text-rose-500">{error}</Text>}
+        {error && <ShowError err={error} />}
 
         <FormTextInput
           label="Title"

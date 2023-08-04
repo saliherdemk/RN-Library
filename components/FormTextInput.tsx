@@ -1,5 +1,5 @@
-import { View, Text, TextInput } from "react-native";
 import React from "react";
+import { Text, TextInput, View } from "react-native";
 
 interface FormTextInputProps {
   label: string;

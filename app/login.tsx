@@ -16,6 +16,7 @@ import { setUser, setUserData } from "../redux/slicers/userSlicer";
 import BookService from "../services/bookService";
 import FilterService from "../services/filterService";
 import { supabase } from "../services/supabase";
+import ShowError from "../components/ShowError";
 
 const Login = () => {
   const [email, setEmail] = useState("asffjd@gmail.com");
@@ -93,7 +94,8 @@ const Login = () => {
     <Container classList="justify-center items-center">
       <View className="w-5/6 px-8 py-5 flex bg-white rounded-md shadow items-center">
         <Logo />
-        {error && <Text className="text-rose-500">{error}</Text>}
+        {error && <ShowError err={error as string} />}
+
         <FormTextInput
           label=""
           value={email}

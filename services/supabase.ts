@@ -1,8 +1,8 @@
-import "react-native-url-polyfill/auto";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import "react-native-url-polyfill/auto";
 
+import { SUPABASE_ANON_KEY, SUPABASE_URL } from "@env";
 import { createClient } from "@supabase/supabase-js";
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from "@env";
 
 const ExpoSecureStoreAdapter = {
   getItem: async (key: string) => {

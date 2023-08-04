@@ -1,16 +1,15 @@
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { FlatList, Text, TouchableOpacity } from "react-native";
+import { FlatList, TouchableOpacity } from "react-native";
 import BookComponent from "../../../components/BookComponent";
 import Container from "../../../components/Container";
 import Loading from "../../../components/Loading";
+import NoBooks from "../../../components/NoBooks";
 import ShowActiveSortFilter from "../../../components/ShowActiveSortFilter";
 import FilterExpandable from "../../../components/filtersComponent/FilterExpandable";
 import Header from "../../../components/headers/Header";
 import { useAppSelector } from "../../../redux/hooks";
 import { BookType } from "../../../types/bookTypes";
-import NoBooks from "../../../components/NoBooks";
-
 const Books = () => {
   const books = useAppSelector((state) => state.bookData.books);
   const [shownBooks, setShownBooks] = useState<Array<BookType> | null>(null);

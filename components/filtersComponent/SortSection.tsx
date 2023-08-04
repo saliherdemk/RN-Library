@@ -1,9 +1,9 @@
-import { View, Text, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
 import { Picker } from "@react-native-picker/picker";
-import { BookType } from "../../types/bookTypes";
+import React, { useState } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
 import { useDispatch } from "react-redux";
 import { setAppliedSorts } from "../../redux/slicers/filterSlicer";
+import { BookType } from "../../types/bookTypes";
 
 const SortSection = () => {
   const [selectedSort, setSelectedSort] = useState({

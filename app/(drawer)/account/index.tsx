@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import Container from "../../../components/Container";
 import Loading from "../../../components/Loading";
+import NoBooks from "../../../components/NoBooks";
 import ProfileBookComponent from "../../../components/ProfileBookComponent";
 import Settings from "../../../components/Settings";
 import SwitchMenu from "../../../components/SwitchMenu";
@@ -10,7 +11,6 @@ import AccountHeaderContainer from "../../../components/headers/AccountHeaderCon
 import { useAppSelector } from "../../../redux/hooks";
 import UserService from "../../../services/userService";
 import { BookType } from "../../../types/bookTypes";
-import NoBooks from "../../../components/NoBooks";
 
 const Account = () => {
   const user = useAppSelector((state) => state.userData.user);

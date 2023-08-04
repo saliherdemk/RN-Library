@@ -4,7 +4,6 @@ import { Stack, useRouter } from "expo-router";
 import { useSearchParams } from "expo-router/src/LocationProvider";
 import React, { useEffect, useState } from "react";
 import {
-  ActivityIndicator,
   Alert,
   Image,
   ScrollView,
@@ -13,6 +12,7 @@ import {
   View,
 } from "react-native";
 import { useDispatch } from "react-redux";
+import Button from "../../../../components/Button";
 import Container from "../../../../components/Container";
 import FormTextInput from "../../../../components/FormTextInput";
 import Loading from "../../../../components/Loading";
@@ -27,7 +27,7 @@ import { editBookFromUserBooks } from "../../../../redux/slicers/userSlicer";
 import BookService from "../../../../services/bookService";
 import FilterService from "../../../../services/filterService";
 import { ImageFileType } from "../../../../types/bookTypes";
-import Button from "../../../../components/Button";
+import ShowError from "../../../../components/ShowError";
 
 const EditBook = () => {
   const { isbn } = useSearchParams();
@@ -175,7 +175,7 @@ const EditBook = () => {
             </View>
           </Container>
 
-          {error && <Text className="text-rose-500">{error}</Text>}
+          {error && <ShowError err={error} />}
 
           <FormTextInput label="Title" value={title} setValue={setTitle} />
 

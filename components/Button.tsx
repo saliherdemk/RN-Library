@@ -1,5 +1,5 @@
-import { ActivityIndicator, Text, TouchableOpacity } from "react-native";
 import React from "react";
+import { ActivityIndicator, Text, TouchableOpacity } from "react-native";
 
 interface ButtonProps {
   title: string;

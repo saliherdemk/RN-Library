@@ -1,14 +1,14 @@
 import { AntDesign } from "@expo/vector-icons";
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useDispatch } from "react-redux";
+import { filterBooks, sortBooks } from "../helper/filterSortHelpers";
 import { useAppSelector } from "../redux/hooks";
 import {
   resetAppliedSorts,
   setAppliedFilter,
 } from "../redux/slicers/filterSlicer";
 import { BookType } from "../types/bookTypes";
-import { filterBooks, sortBooks } from "../helper/filterSortHelpers";
 
 export default function ShowActiveSortFilter({
   shownBooks,

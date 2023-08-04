@@ -1,19 +1,18 @@
-import React from "react";
-import { Alert, Text, TouchableOpacity, View } from "react-native";
+import React, { useState } from "react";
+import { Alert, Text, View } from "react-native";
 import { useDispatch } from "react-redux";
 import { formatDate } from "../../helper/formatDate";
-import { useAppSelector } from "../../redux/hooks";
 import { removeBookFromBooks } from "../../redux/slicers/bookSlicer";
+import {
+  setAuthorsFilter,
+  setTypesFilter,
+} from "../../redux/slicers/filterSlicer";
 import {
   removeBookFromFavBooks,
   removeBookFromUserBooks,
 } from "../../redux/slicers/userSlicer";
 import BookService from "../../services/bookService";
 import FilterService from "../../services/filterService";
-import {
-  setAuthorsFilter,
-  setTypesFilter,
-} from "../../redux/slicers/filterSlicer";
 import Button from "../Button";
 
 const BookContainer = ({
@@ -27,9 +26,8 @@ const BookContainer = ({
     created_at: string;
   };
 }) => {
-  const user = useAppSelector((state) => state.userData.user);
-
   const dispatch = useDispatch();
+  const [isBtnLoading, setIsBtnLoading] = useState(false);
 
   const handleDeletion = () => {
     Alert.alert("Delete Book", "You can not undo this action", [
@@ -44,15 +42,19 @@ const BookContainer = ({
         text: "OK",
         onPress: async () => {
           const isbn = book.isbn;
+          setIsBtnLoading(true);
           const result = await BookService.deleteBook(
             isbn,
             book.cover_url_suffix
           );
-          if (!result.err) {
-            dispatch(removeBookFromBooks(isbn));
-            dispatch(removeBookFromUserBooks(isbn));
-            dispatch(removeBookFromFavBooks(isbn));
+          if (result.err) {
+            Alert.alert("Sonething Went Wrong");
+            setIsBtnLoading(false);
+            return;
           }
+          dispatch(removeBookFromBooks(isbn));
+          dispatch(removeBookFromUserBooks(isbn));
+          dispatch(removeBookFromFavBooks(isbn));
 
           if (result?.type_needs_update) {
             dispatch(setTypesFilter(await FilterService.getAllTypeFilters()));
@@ -63,6 +65,7 @@ const BookContainer = ({
               setAuthorsFilter(await FilterService.getAllAuthorFilters())
             );
           }
+          setIsBtnLoading(false);
         },
       },
     ]);
@@ -75,7 +78,12 @@ const BookContainer = ({
       <Text className="text-right ">published by {book.publisher}</Text>
       <Text className="text-right ">at {formatDate(book.created_at)}</Text>
 
-      <Button onPress={handleDeletion} title="Delete" classList="bg-rose-500" />
+      <Button
+        onPress={handleDeletion}
+        title="Delete"
+        classList="bg-rose-500"
+        isLoading={isBtnLoading}
+      />
     </View>
   );
 };

@@ -1,6 +1,6 @@
-import { Image, Text, TouchableOpacity } from "react-native";
-import React from "react";
 import { useRouter } from "expo-router";
+import React from "react";
+import { Image, TouchableOpacity } from "react-native";
 import { COVER_URL_PREFIX } from "../helper/coverUrlPrefix";
 
 export default function ProfileBookComponent({

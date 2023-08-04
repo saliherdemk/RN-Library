@@ -1,5 +1,5 @@
-import { ViewStyle, View } from "react-native";
 import React, { ReactNode } from "react";
+import { View } from "react-native";
 
 interface ContainerProps {
   children: ReactNode;

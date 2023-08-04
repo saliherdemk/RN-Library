@@ -14,7 +14,6 @@ const Profile = () => {
   const { username } = useSearchParams();
   const [books, setBooks] = useState<Array<BookType>>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const router = useRouter();
 
   const fetchUser = async () => {
     const idData = await UserService.getUserByUsername(username as string);

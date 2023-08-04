@@ -1,6 +1,6 @@
-import { View, Text } from "react-native";
-import React, { ReactNode } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import React, { ReactNode } from "react";
+import { Text } from "react-native";
 import Container from "./Container";
 
 interface NoBooksProps {

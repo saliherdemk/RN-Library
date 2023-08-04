@@ -9,6 +9,7 @@ import { isEmailValid } from "../helper/validateEmail";
 import { useAppDispatch } from "../redux/hooks";
 import { setUser } from "../redux/slicers/userSlicer";
 import { supabase } from "../services/supabase";
+import ShowError from "../components/ShowError";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -107,7 +108,7 @@ const Register = () => {
     <Container classList="justify-center items-center">
       <View className="w-5/6 px-8 py-5 flex bg-white rounded-md shadow items-center">
         <Logo />
-        {error && <Text className="text-rose-500">{error}</Text>}
+        {error && <ShowError err={error as string} />}
 
         <FormTextInput
           label=""

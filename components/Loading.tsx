@@ -1,5 +1,6 @@
 //https://dereckquock.com/react-native-looping-opacity-animation
 
+import { Image } from "react-native";
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -7,7 +8,6 @@ import Animated, {
   withRepeat,
   withTiming,
 } from "react-native-reanimated";
-import { Image } from "react-native";
 function Loading() {
   const opacity = useSharedValue(0);
 

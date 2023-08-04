@@ -1,17 +1,15 @@
 import { Picker } from "@react-native-picker/picker";
 import React, { useState } from "react";
-import { Alert, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Text, View } from "react-native";
 import UserService from "../../services/userService";
 import Button from "../Button";
 import Container from "../Container";
 
 const UserContainer = ({
   user,
-  authRole,
   updateUser,
 }: {
   user: { role: Number; username: string };
-  authRole: Number;
   updateUser: (username: string, newRole: Number) => void;
 }) => {
   const [selectedRole, setSelectedRole] = useState(user.role);

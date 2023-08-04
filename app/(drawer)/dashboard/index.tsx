@@ -6,21 +6,21 @@ import { useDispatch } from "react-redux";
 import BookComponent from "../../../components/BookComponent";
 import Button from "../../../components/Button";
 import Loading from "../../../components/Loading";
+import NoBooks from "../../../components/NoBooks";
 import Header from "../../../components/headers/Header";
 import { useAppSelector } from "../../../redux/hooks";
 import { removeBookFromBooks } from "../../../redux/slicers/bookSlicer";
+import {
+  setAuthorsFilter,
+  setTypesFilter,
+} from "../../../redux/slicers/filterSlicer";
 import {
   removeBookFromFavBooks,
   removeBookFromUserBooks,
 } from "../../../redux/slicers/userSlicer";
 import BookService from "../../../services/bookService";
-import { BookType } from "../../../types/bookTypes";
-import {
-  setAuthorsFilter,
-  setTypesFilter,
-} from "../../../redux/slicers/filterSlicer";
 import FilterService from "../../../services/filterService";
-import NoBooks from "../../../components/NoBooks";
+import { BookType } from "../../../types/bookTypes";
 
 const Dashboard = () => {
   const books = useAppSelector((state) => state.userData.data.userBooks);
@@ -73,11 +73,13 @@ const Dashboard = () => {
         text: "OK",
         onPress: async () => {
           const result = await BookService.deleteBook(isbn, cover_url_suffix);
-          if (!result.err) {
-            dispatch(removeBookFromBooks(isbn));
-            dispatch(removeBookFromUserBooks(isbn));
-            dispatch(removeBookFromFavBooks(isbn));
+          if (result.err) {
+            Alert.alert("Sonething Went Wrong");
+            return;
           }
+          dispatch(removeBookFromBooks(isbn));
+          dispatch(removeBookFromUserBooks(isbn));
+          dispatch(removeBookFromFavBooks(isbn));
 
           if (result?.type_needs_update) {
             dispatch(setTypesFilter(await FilterService.getAllTypeFilters()));

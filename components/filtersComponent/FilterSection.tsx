@@ -1,15 +1,15 @@
+import React, { useEffect, useState } from "react";
 import {
-  View,
+  ScrollView,
   Text,
   TextInput,
-  ScrollView,
   TouchableOpacity,
+  View,
 } from "react-native";
-import CheckBox from "../CheckBox";
-import React, { useState, useEffect } from "react";
-import { useAppSelector } from "../../redux/hooks";
 import { useDispatch } from "react-redux";
+import { useAppSelector } from "../../redux/hooks";
 import { setAppliedFilter } from "../../redux/slicers/filterSlicer";
+import CheckBox from "../CheckBox";
 
 const FilterSection = () => {
   const typesArray = useAppSelector((state) => state.filtersData.types);

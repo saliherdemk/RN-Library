@@ -1,16 +1,15 @@
-import { AntDesign, Entypo } from "@expo/vector-icons";
+import { AntDesign, Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Stack } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { FlatList } from "react-native";
 import Container from "../../components/Container";
 import Loading from "../../components/Loading";
+import NoBooks from "../../components/NoBooks";
 import SwitchMenu from "../../components/SwitchMenu";
 import BookContainer from "../../components/admin/bookContainer";
 import UserContainer from "../../components/admin/userContainer";
 import { useAppSelector } from "../../redux/hooks";
 import UserService from "../../services/userService";
-import NoBooks from "../../components/NoBooks";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState<
@@ -98,11 +97,7 @@ const AdminDashboard = () => {
                 data={users}
                 className="px-3"
                 renderItem={({ item }) => (
-                  <UserContainer
-                    user={item}
-                    authRole={userRole.vis}
-                    updateUser={updateUser}
-                  />
+                  <UserContainer user={item} updateUser={updateUser} />
                 )}
                 ListEmptyComponent={() => (
                   <NoBooks

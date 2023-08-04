@@ -1,6 +1,5 @@
-import { View, Pressable } from "react-native";
 import React, { ReactNode } from "react";
-import { Fontisto, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Pressable, View, Alert } from "react-native";
 
 interface MenuProps {
   switchValue: boolean;
@@ -19,12 +18,19 @@ export default function SwitchMenu({
   iconLeftDisabled = false,
   iconRightDisabled = false,
 }: MenuProps) {
+  const handleLeftPress = () => {
+    iconLeftDisabled
+      ? Alert.alert(
+          "You don't have permission",
+          "You are a moderator and you don't have permission for this."
+        )
+      : setSwitchValue(false);
+  };
   return (
     <View className="flex-row px-3 pt-0 my-2">
       <Pressable
-        disabled={iconLeftDisabled}
         className={`${!switchValue && "border-t-2 "} flex-1 items-center pt-2`}
-        onPress={() => setSwitchValue(false)}
+        onPress={handleLeftPress}
       >
         {iconLeft}
       </Pressable>

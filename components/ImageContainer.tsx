@@ -1,5 +1,5 @@
-import { View, Text, Image } from "react-native";
 import React from "react";
+import { Image, View } from "react-native";
 
 export default function ImageContainer({ uri }: { uri: string }) {
   return (
