@@ -11,7 +11,7 @@ export function sortBooks(
     sortedBooks.sort((a, b) => {
       const dateA = new Date(a.created_at);
       const dateB = new Date(b.created_at);
-      return dateA.getTime() - dateB.getTime();
+      return dateB.getTime() - dateA.getTime();
     });
   } else {
     switch (key) {
@@ -29,7 +29,7 @@ export function sortBooks(
     }
   }
 
-  if (appliedSorts.sortOrder === "desc") {
+  if (appliedSorts.sortOrder === "asc") {
     sortedBooks.reverse();
   }
 
