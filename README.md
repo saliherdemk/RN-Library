@@ -12,7 +12,8 @@ You have to create .env file and put your credientials for supabase
 
 ```bash
 SUPABASE_URL={Something}
-SUPABASE_ANON_KEY={Something}```
+SUPABASE_ANON_KEY={Something}
+```
 
 ### Clone the repository
 
