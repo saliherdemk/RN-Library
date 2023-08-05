@@ -3,19 +3,13 @@ import * as DocumentPicker from "expo-document-picker";
 import { Stack, useRouter } from "expo-router";
 import { useSearchParams } from "expo-router/src/LocationProvider";
 import React, { useEffect, useState } from "react";
-import {
-  Alert,
-  Image,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Alert, Image, ScrollView, TouchableOpacity, View } from "react-native";
 import { useDispatch } from "react-redux";
 import Button from "../../../../components/Button";
 import Container from "../../../../components/Container";
 import FormTextInput from "../../../../components/FormTextInput";
 import Loading from "../../../../components/Loading";
+import ShowError from "../../../../components/ShowError";
 import { COVER_URL_PREFIX } from "../../../../helper/coverUrlPrefix";
 import { trimString } from "../../../../helper/trim";
 import { editBookFromBooks } from "../../../../redux/slicers/bookSlicer";
@@ -27,7 +21,6 @@ import { editBookFromUserBooks } from "../../../../redux/slicers/userSlicer";
 import BookService from "../../../../services/bookService";
 import FilterService from "../../../../services/filterService";
 import { ImageFileType } from "../../../../types/bookTypes";
-import ShowError from "../../../../components/ShowError";
 
 const EditBook = () => {
   const { isbn } = useSearchParams();
@@ -193,6 +186,7 @@ const EditBook = () => {
             title={"Edit"}
             isLoading={isBtnLoading}
             onPress={handleEdit}
+            classList="mb-3"
           />
         </ScrollView>
       )}

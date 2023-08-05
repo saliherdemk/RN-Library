@@ -2,7 +2,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
 import { useSearchParams } from "expo-router/src/LocationProvider";
 import React, { useEffect, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch } from "react-redux";
 import Container from "../../components/Container";
 import ImageContainer from "../../components/ImageContainer";
@@ -97,7 +97,7 @@ const BookDetails = () => {
       {isLoading ? (
         <Loading />
       ) : (
-        <>
+        <ScrollView className="flex-1">
           {!book ? (
             <Text>This book might be deleted</Text>
           ) : (
@@ -130,7 +130,7 @@ const BookDetails = () => {
                 onPress={() => {
                   goToPublisher(book.publisher);
                 }}
-                className="w-full bg-white p-2 pt-4 mt-2 rounded-lg"
+                className="w-full bg-white p-2 pt-4 my-2 rounded-lg"
               >
                 <Text className="text-center">
                   Published by{" "}
@@ -142,7 +142,7 @@ const BookDetails = () => {
               </TouchableOpacity>
             </View>
           )}
-        </>
+        </ScrollView>
       )}
     </Container>
   );

@@ -1,10 +1,11 @@
 import * as DocumentPicker from "expo-document-picker";
 import { Stack, useRouter } from "expo-router";
 import React, { useState } from "react";
-import { Alert, Image, ScrollView, Text, TouchableOpacity } from "react-native";
+import { Alert, Image, ScrollView, TouchableOpacity } from "react-native";
 import Button from "../../../components/Button";
 import Container from "../../../components/Container";
 import FormTextInput from "../../../components/FormTextInput";
+import ShowError from "../../../components/ShowError";
 import { COVER_URL_PREFIX } from "../../../helper/coverUrlPrefix";
 import { trimString } from "../../../helper/trim";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
@@ -17,7 +18,6 @@ import { addBookToUserBooks } from "../../../redux/slicers/userSlicer";
 import BookService from "../../../services/bookService";
 import FilterService from "../../../services/filterService";
 import { ImageFileType } from "../../../types/bookTypes";
-import ShowError from "../../../components/ShowError";
 
 const AddBook = () => {
   const [title, setTitle] = useState("asd");
@@ -169,7 +169,7 @@ const AddBook = () => {
           title={"Add"}
           isLoading={isBtnLoading}
           onPress={handleSubmit}
-          classList="bg-green-500"
+          classList="bg-green-500 mb-3"
         />
       </ScrollView>
     </>

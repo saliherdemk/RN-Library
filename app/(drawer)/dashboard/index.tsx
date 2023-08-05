@@ -44,7 +44,7 @@ const Dashboard = () => {
           onPress={() => {
             handleDeletion(item.isbn, item.cover_url_suffix);
           }}
-          classList="bg-rose-500 flex-1"
+          classList="bg-rose-500 flex-1 rounded-r-none"
         />
 
         <Button
@@ -52,7 +52,7 @@ const Dashboard = () => {
           onPress={() => {
             handleEdit(item.isbn);
           }}
-          classList=" flex-1"
+          classList="flex-1 rounded-l-none"
         />
       </View>
     </View>

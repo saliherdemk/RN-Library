@@ -1,4 +1,4 @@
-import { Stack, useRouter } from "expo-router";
+import { Stack } from "expo-router";
 import { useSearchParams } from "expo-router/src/LocationProvider";
 import React, { useEffect, useState } from "react";
 import { FlatList } from "react-native";

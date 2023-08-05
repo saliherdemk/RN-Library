@@ -1,21 +1,20 @@
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import Button from "../components/Button";
-import Container from "../components/Container";
 import FormTextInput from "../components/FormTextInput";
 import Logo from "../components/Logo";
+import ShowError from "../components/ShowError";
 import { isEmailValid } from "../helper/validateEmail";
 import { useAppDispatch } from "../redux/hooks";
 import { setUser } from "../redux/slicers/userSlicer";
 import { supabase } from "../services/supabase";
-import ShowError from "../components/ShowError";
 
 const Register = () => {
   const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("asd@gmail.com");
-  const [password, setPassword] = useState("123456");
-  const [confirmPassword, setConfirmPassword] = useState("123456");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const [isBtnLoading, setIsBtnLoading] = useState(false);
   const [error, setError] = useState<String | null>(null);
@@ -105,7 +104,13 @@ const Register = () => {
   };
 
   return (
-    <Container classList="justify-center items-center">
+    <ScrollView
+      contentContainerStyle={{
+        flexGrow: 1,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       <View className="w-5/6 px-8 py-5 flex bg-white rounded-md shadow items-center">
         <Logo />
         {error && <ShowError err={error as string} />}
@@ -156,7 +161,7 @@ const Register = () => {
           <Text className="text-blue-500">Sign In</Text>
         </TouchableOpacity>
       </View>
-    </Container>
+    </ScrollView>
   );
 };
 
