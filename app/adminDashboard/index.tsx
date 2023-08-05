@@ -5,7 +5,7 @@ import { FlatList } from "react-native";
 import Container from "../../components/Container";
 import Loading from "../../components/Loading";
 import NoBooks from "../../components/NoBooks";
-import SwitchMenu from "../../components/SwitchMenu";
+import SwitchMenu from "../../components/switchMenu";
 import BookContainer from "../../components/admin/bookContainer";
 import UserContainer from "../../components/admin/userContainer";
 import { useAppSelector } from "../../redux/hooks";
