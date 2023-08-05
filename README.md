@@ -4,10 +4,9 @@ A mobile application for book publishing and previewing, complete with filtering
 
 ## Demo
 
-## Dev Server
-
 https://github.com/saliherdemk/RN-Library/assets/72851920/71aa877d-ccd1-4843-a244-3f12f39f06e6
 
+## Dev Server
 
 ### Clone the repository
 
