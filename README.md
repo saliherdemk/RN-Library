@@ -8,6 +8,12 @@ https://github.com/saliherdemk/RN-Library/assets/72851920/71aa877d-ccd1-4843-a24
 
 ## Dev Server
 
+You have to create .env file and put your credientials for supabase
+
+```bash
+SUPABASE_URL={Something}
+SUPABASE_ANON_KEY={Something}```
+
 ### Clone the repository
 
 ```bash
