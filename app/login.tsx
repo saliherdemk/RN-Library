@@ -116,9 +116,6 @@ const Login = () => {
           placeHolder="Password"
           secureTextEntry={true}
         />
-        <TouchableOpacity className="w-full mb-2">
-          <Text className="text-right text-blue-500">Forgot Password?</Text>
-        </TouchableOpacity>
 
         <Button
           onPress={handleLogIn}

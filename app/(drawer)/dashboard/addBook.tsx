@@ -20,10 +20,10 @@ import FilterService from "../../../services/filterService";
 import { ImageFileType } from "../../../types/bookTypes";
 
 const AddBook = () => {
-  const [title, setTitle] = useState("asd");
-  const [isbn, setIsbn] = useState("qwe");
-  const [type, setType] = useState("asd");
-  const [authors, setAuthors] = useState("asdqwe");
+  const [title, setTitle] = useState("");
+  const [isbn, setIsbn] = useState("");
+  const [type, setType] = useState("");
+  const [authors, setAuthors] = useState("");
   const [coverFile, setCoverFile] = useState<ImageFileType | null>(null);
   const [error, setError] = useState<string | null>(null);
   const user = useAppSelector((state) => state.userData.user);
